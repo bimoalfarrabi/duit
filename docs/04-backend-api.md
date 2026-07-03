@@ -2,7 +2,7 @@
 
 ## Stack
 
-- Laravel 11, PHP 8.2+
+- Laravel 12, PHP 8.2
 - MySQL 8.0+
 - Laravel Sanctum (auth)
 - Shared hosting compatible

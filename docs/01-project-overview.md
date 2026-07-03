@@ -15,7 +15,7 @@ Ekosistem pencatatan keuangan personal yang cepat, terpusat, dan bisa di-self-ho
 
 | Komponen | Teknologi | Peran |
 |----------|-----------|-------|
-| Backend | Laravel 11 + MySQL | REST API, single source of truth |
+| Backend | Laravel 12 + MySQL | REST API, single source of truth |
 | Dashboard | Astro SSR + Tailwind | Visualisasi read-only |
 | Mobile | Kotlin + Jetpack Compose | Input utama |
 
