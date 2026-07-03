@@ -62,6 +62,7 @@ Ownership violation → HTTP 403
 **Business rules:**
 - `cash`: max 1 per user, dibuat otomatis saat register → `POST` dengan `type=cash` ditolak 422 jika sudah ada
 - `bank`/`ewallet`: tidak terbatas
+- Cash wallet tidak bisa dihapus → `DELETE` pada cash wallet return 403
 
 **Wallet object:**
 ```json
@@ -140,6 +141,17 @@ Ownership violation → HTTP 403
 **Summary response:**
 ```json
 { "data": { "income": 5000000, "expense": 1200000, "balance": 3800000 }, "status": true }
+```
+
+**By-category response:**
+```json
+{
+  "data": [
+    { "category_id": 1, "category_name": "Makan", "category_type": "expense", "total": 350000 },
+    { "category_id": 2, "category_name": "Transport", "category_type": "expense", "total": 120000 },
+    { "category_id": 3, "category_name": "Gaji", "category_type": "income", "total": 5000000 }
+  ]
+}
 ```
 
 **By-wallet response:**

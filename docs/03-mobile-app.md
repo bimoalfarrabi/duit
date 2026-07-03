@@ -85,13 +85,28 @@ interface ApiService {
     @POST("auth/login") suspend fun login(@Body body: LoginRequest): LoginResponse
     @POST("auth/logout") suspend fun logout(): Unit
     @GET("auth/me") suspend fun me(): UserResponse
-    @GET("categories") suspend fun getCategories(): List<CategoryResponse>
-    @POST("categories") suspend fun createCategory(@Body body: CreateCategoryRequest): CategoryResponse
-    @GET("wallets") suspend fun getWallets(): List<WalletResponse>
+
+    @GET("wallets") suspend fun getWallets(): WalletListResponse
     @POST("wallets") suspend fun createWallet(@Body body: CreateWalletRequest): WalletResponse
-    @GET("transactions") suspend fun getTransactions(@QueryMap params: Map<String, String>): List<TransactionResponse>
+    @PUT("wallets/{id}") suspend fun updateWallet(@Path("id") id: Int, @Body body: CreateWalletRequest): WalletResponse
+    @DELETE("wallets/{id}") suspend fun deleteWallet(@Path("id") id: Int): BaseResponse
+
+    @GET("categories") suspend fun getCategories(): CategoryListResponse
+    @POST("categories") suspend fun createCategory(@Body body: CreateCategoryRequest): CategoryResponse
+    @PUT("categories/{id}") suspend fun updateCategory(@Path("id") id: Int, @Body body: CreateCategoryRequest): CategoryResponse
+    @DELETE("categories/{id}") suspend fun deleteCategory(@Path("id") id: Int): BaseResponse
+
+    @GET("transactions") suspend fun getTransactions(@QueryMap params: Map<String, String>): TransactionListResponse
     @POST("transactions") suspend fun createTransaction(@Body body: CreateTransactionRequest): TransactionResponse
+    @PUT("transactions/{id}") suspend fun updateTransaction(@Path("id") id: Int, @Body body: CreateTransactionRequest): TransactionResponse
+    @DELETE("transactions/{id}") suspend fun deleteTransaction(@Path("id") id: Int): BaseResponse
+
     @GET("statistics/summary") suspend fun getSummary(@Query("month") month: Int, @Query("year") year: Int): SummaryResponse
+    @GET("statistics/by-category") suspend fun getByCategory(@Query("month") month: Int, @Query("year") year: Int): ByCategoryResponse
+    @GET("statistics/by-wallet") suspend fun getByWallet(@Query("month") month: Int, @Query("year") year: Int): ByWalletResponse
+    @GET("statistics/monthly") suspend fun getMonthly(@Query("year") year: Int): MonthlyResponse
+
+    @GET("export/transactions") @Streaming suspend fun exportCsv(@QueryMap params: Map<String, String>): ResponseBody
 }
 ```
 

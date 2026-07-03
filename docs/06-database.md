@@ -55,7 +55,7 @@ wallets
 | type | ENUM('cash','bank','ewallet') | Tipe wallet |
 | color | VARCHAR(7) | Hex color |
 | icon | VARCHAR(50) | Nama icon |
-| balance | DECIMAL(15,2) DEFAULT 0 | Saldo awal (manual) |
+| balance | DECIMAL(15,2) DEFAULT 0 | Saldo tersimpan — di-update saat transaksi create/update/delete |
 | created_at | TIMESTAMP | |
 | updated_at | TIMESTAMP | |
 
@@ -107,3 +107,39 @@ INDEX idx_transactions_category ON transactions(category_id);
 
 - Semua foreign key: `ON DELETE CASCADE` (hapus user → hapus semua datanya)
 - `amount` selalu positif — tipe (income/expense) yang menentukan arah
+
+---
+
+## Business Rules: Balance Wallet
+
+`wallets.balance` adalah nilai **tersimpan**, bukan computed:
+
+- Saat wallet dibuat → `balance` diisi dari input user (saldo awal, default 0)
+- Saat transaksi di-`POST` → `balance` di-update: `income` tambah, `expense` kurang
+- Saat transaksi di-`PUT` → balance di-reverse dari nilai lama, lalu apply nilai baru
+- Saat transaksi di-`DELETE` → balance di-reverse dari nilai transaksi yang dihapus
+- Kalkulasi semua di `TransactionController`, bukan di model event
+
+```php
+// Contoh di TransactionController@store
+$wallet = Wallet::findOrFail($request->wallet_id);
+$delta = $request->type === 'income' ? $request->amount : -$request->amount;
+$wallet->increment('balance', $delta);
+```
+
+---
+
+## Default Categories (Seed saat Register)
+
+Dibuat otomatis via `UserObserver` atau `RegisterController` bersamaan dengan cash wallet.
+
+| Nama | Tipe |
+|------|------|
+| Gaji | income |
+| Bisnis | income |
+| Makan | expense |
+| Transport | expense |
+| Belanja | expense |
+| Hiburan | expense |
+| Kesehatan | expense |
+| Tagihan | expense |
