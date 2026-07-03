@@ -182,7 +182,17 @@ Setiap perubahan di codebase — terutama yang menyentuh fitur — **wajib diser
 
 Tujuan: mendeteksi error dan bug tanpa harus menyentuh user.
 
-### Decision Making
+### Roadmap
+
+Ikuti urutan versi di [`docs/07-roadmap.md`](docs/07-roadmap.md). Jangan implementasi fitur v2+ sebelum semua item v1 selesai. Jika user meminta fitur yang belum waktunya, tolak dan tunjukkan di roadmap versi berapa fitur itu dijadwalkan.
+
+### Update Versi Dokumentasi
+
+Setelah menyelesaikan implementasi fitur atau milestone, update status di dokumen yang relevan:
+
+- Tandai task selesai di [`docs/09-tasks.md`](docs/09-tasks.md)
+- Update progress/status di [`docs/07-roadmap.md`](docs/07-roadmap.md) jika milestone tercapai
+- Update versi atau catatan perubahan di doc yang terpengaruh (schema, endpoint, screen)
 
 Setiap keputusan teknis yang tidak trivial **wajib dikonfirmasi ke user** sebelum diimplementasi.
 
