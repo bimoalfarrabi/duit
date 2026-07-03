@@ -52,8 +52,8 @@ Tidak ada token → redirect /login
 
 | Layer | Tech | Versi |
 |-------|------|-------|
-| Backend language | PHP | 8.2+ |
-| Backend framework | Laravel | 11 |
+| Backend language | PHP | 8.2 |
+| Backend framework | Laravel | 12 |
 | Auth | Laravel Sanctum | bundled |
 | Database | MySQL | 8.0+ |
 | Web framework | Astro | 4+ (SSR) |
