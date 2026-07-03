@@ -48,11 +48,25 @@ Ekosistem minimal yang berfungsi penuh: catat transaksi dari Android, lihat anal
 
 Kategori punya: `name`, `type` (income/expense), `color`, `icon`.
 
+#### Sumber Dana (Wallet)
+| Endpoint | Deskripsi |
+|----------|-----------|
+| `GET /api/wallets` | List wallet milik user |
+| `POST /api/wallets` | Buat wallet baru |
+| `PUT /api/wallets/{id}` | Update wallet |
+| `DELETE /api/wallets/{id}` | Hapus wallet |
+
+Wallet punya: `name`, `type` (cash/bank/ewallet), `color`, `icon`, `balance` (saldo awal).
+
+**Business rules:**
+- `cash` — maksimal 1 per user. Dibuat otomatis saat register, tidak bisa dihapus.
+- `bank` dan `ewallet` — tidak terbatas, user bebas tambah sebanyak akun yang dimiliki.
+
 #### Transaksi
 | Endpoint | Deskripsi |
 |----------|-----------|
-| `GET /api/transactions` | List transaksi, filter: `?month=&year=&type=&category_id=` |
-| `POST /api/transactions` | Tambah transaksi |
+| `GET /api/transactions` | List transaksi, filter: `?month=&year=&type=&category_id=&wallet_id=` |
+| `POST /api/transactions` | Tambah transaksi (wajib sertakan `wallet_id`) |
 | `PUT /api/transactions/{id}` | Update transaksi |
 | `DELETE /api/transactions/{id}` | Hapus transaksi |
 
@@ -67,7 +81,8 @@ Kategori punya: `name`, `type` (income/expense), `color`, `icon`.
 ```sql
 users          — id, name, email, password, timestamps
 categories     — id, user_id, name, type, color, icon, timestamps
-transactions   — id, user_id, category_id, title, amount, type, date, note, timestamps
+wallets        — id, user_id, name, type ENUM('cash','bank','ewallet'), color, icon, balance DECIMAL(15,2) DEFAULT 0, timestamps
+transactions   — id, user_id, category_id, wallet_id, title, amount, type, date, note, timestamps
 ```
 
 #### Constraints

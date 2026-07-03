@@ -116,6 +116,7 @@ File: `src/pages/dashboard.astro`
 - [ ] Fetch `GET /api/statistics/summary?month=&year=` → tampil 3 StatCard (pemasukan, pengeluaran, saldo)
 - [ ] Fetch `GET /api/statistics/monthly?year=` → data untuk grafik batang bulanan
 - [ ] Fetch `GET /api/statistics/by-category?month=&year=` → data untuk grafik donut kategori
+- [ ] Fetch `GET /api/statistics/by-wallet?month=&year=` → tampil saldo per wallet (bar atau card kecil)
 - [ ] Chart.js di-init via `<script>` tag, data di-inject sebagai JSON inline
 
 ```astro
@@ -135,7 +136,7 @@ const monthly = await apiFetch('/api/statistics/monthly?year=2026', token);
 
 File: `src/pages/transactions.astro`
 
-- [ ] Terima query params: `?month=&year=&type=&category_id=`
+- [ ] Terima query params: `?month=&year=&type=&category_id=&wallet_id=`
 - [ ] Fetch `GET /api/transactions` dengan params tersebut
 - [ ] Render tabel: tanggal, judul, kategori, tipe, nominal
 - [ ] Filter form (simple HTML form, GET method) untuk month/year/type

@@ -142,16 +142,16 @@ File: `ui/navigation/AppNavigation.kt`
 
 ## Fase 8 — AddTransactionScreen
 
-- [ ] Form fields: judul (TextField), nominal (TextField numeric), tipe (SegmentedButton income/expense), kategori (DropdownMenu dari API), tanggal (DatePicker)
-- [ ] `AddTransactionViewModel`: load categories, handle submit
+- [ ] Form fields: judul (TextField), nominal (TextField numeric), tipe (SegmentedButton income/expense), kategori (DropdownMenu dari API), **wallet (DropdownMenu dari API)**, tanggal (DatePicker)
+- [ ] `AddTransactionViewModel`: load categories + load wallets, handle submit
 - [ ] Submit → `createTransaction()` → sukses → navigate back ke Home + refresh
-- [ ] Validasi: judul tidak kosong, nominal > 0, kategori dipilih
+- [ ] Validasi: judul tidak kosong, nominal > 0, kategori dipilih, wallet dipilih
 
 ---
 
 ## Fase 9 — TransactionListScreen
 
-- [ ] Filter bar: bulan + tahun (dropdown sederhana)
+- [ ] Filter bar: bulan + tahun + wallet (dropdown sederhana)
 - [ ] `LazyColumn` list transaksi
 - [ ] `TransactionListViewModel`: fetch ulang saat filter berubah
 - [ ] Tidak ada pagination di v1 — load semua sekaligus
@@ -166,10 +166,23 @@ File: `ui/navigation/AppNavigation.kt`
 
 ---
 
+## Fase 11 — WalletScreen
+
+- [ ] List wallet user (grouped atau flat, tampilkan tipe + saldo)
+- [ ] FAB untuk tambah wallet baru (bottom sheet: nama, tipe, warna)
+  - Tipe `cash`: tombol tambah disable jika sudah ada (max 1)
+  - Tipe `bank`/`ewallet`: tidak terbatas
+- [ ] `WalletViewModel`: getWallets + createWallet
+- [ ] Wallet `cash` dibuat otomatis saat register — tidak tampilkan form buat cash baru jika sudah ada
+
+---
+
 ## Checklist Final
 
 - [ ] App build tanpa error (`./gradlew assembleDebug`)
 - [ ] Login berhasil dan token tersimpan
 - [ ] Tambah transaksi dari Android → muncul di Astro dashboard
+- [ ] Wallet picker tampil di AddTransactionScreen
+- [ ] Cash hanya muncul satu di WalletScreen
 - [ ] Tidak ada koneksi → Snackbar error (tidak crash)
 - [ ] Semua screen bisa di-navigate via bottom nav

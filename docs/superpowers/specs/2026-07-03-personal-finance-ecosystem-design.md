@@ -73,8 +73,13 @@ users
 categories
   id, user_id, name, type ENUM('income','expense'), color, icon, timestamps
 
+wallets
+  id, user_id, name, type ENUM('cash','bank','ewallet'), color, icon, balance DECIMAL(15,2) DEFAULT 0, timestamps
+  -- cash: max 1 per user, dibuat otomatis saat register
+  -- bank & ewallet: tidak terbatas per user
+
 transactions
-  id, user_id, category_id, title, amount, type ENUM('income','expense'),
+  id, user_id, category_id, wallet_id, title, amount, type ENUM('income','expense'),
   date, note, timestamps
 ```
 
@@ -87,6 +92,12 @@ Auth
   POST   /api/auth/logout
   GET    /api/auth/me
 
+Wallets
+  GET    /api/wallets
+  POST   /api/wallets
+  PUT    /api/wallets/{id}
+  DELETE /api/wallets/{id}
+
 Categories
   GET    /api/categories
   POST   /api/categories
@@ -94,7 +105,7 @@ Categories
   DELETE /api/categories/{id}
 
 Transactions
-  GET    /api/transactions          ?month=&year=&type=&category_id=
+  GET    /api/transactions          ?month=&year=&type=&category_id=&wallet_id=
   POST   /api/transactions
   PUT    /api/transactions/{id}
   DELETE /api/transactions/{id}
@@ -102,6 +113,7 @@ Transactions
 Statistics
   GET    /api/statistics/summary    ?month=&year=   → { income, expense, balance } bulan itu
   GET    /api/statistics/by-category?month=&year=   → breakdown per kategori
+  GET    /api/statistics/by-wallet  ?month=&year=   → breakdown per wallet
   GET    /api/statistics/monthly    ?year=           → array 12 bulan { month, income, expense }
 ```
 

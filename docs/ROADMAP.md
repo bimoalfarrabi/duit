@@ -20,20 +20,22 @@
 - Auth (register, login, logout)
 - CRUD transaksi
 - CRUD kategori
-- Statistik (summary, by-category, monthly)
+- CRUD sumber dana (wallet: cash singleton, bank/ewallet multiple)
+- Statistik (summary, by-category, by-wallet, monthly)
 
 ### Web (Astro SSR)
 - Login
-- Dashboard: ringkasan saldo, grafik bulanan, grafik kategori
-- Riwayat transaksi + filter
+- Dashboard: ringkasan saldo per wallet, grafik bulanan, grafik kategori
+- Riwayat transaksi + filter (bulan, tipe, wallet)
 - Export laporan (link ke endpoint Laravel)
 
 ### Android (Kotlin + Jetpack Compose)
 - Login
-- Home screen: saldo + transaksi terbaru
-- Tambah transaksi (manual)
-- Riwayat transaksi
+- Home screen: saldo per wallet + transaksi terbaru
+- Tambah transaksi (manual) dengan pilih wallet
+- Riwayat transaksi + filter per wallet
 - Manajemen kategori
+- Manajemen wallet (cash singleton, bank/ewallet multiple)
 
 ---
 
