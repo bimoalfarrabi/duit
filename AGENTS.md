@@ -26,6 +26,8 @@ personal-finance/
 
 Jangan assume environment lain (Docker, Valet, Herd) kecuali user bilang berbeda.
 
+**Jangan jalankan server secara otomatis.** AI agent tidak boleh menjalankan `php artisan serve` atau `npm run dev` tanpa perintah eksplisit dari user. Cukup beritahu user perintah yang perlu dijalankan.
+
 ---
 
 ## Dokumentasi Wajib Dibaca Sebelum Implementasi
