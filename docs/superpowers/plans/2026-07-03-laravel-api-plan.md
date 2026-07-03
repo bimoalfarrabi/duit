@@ -36,12 +36,16 @@ Laravel REST API sebagai backend tunggal untuk Android dan Astro dashboard. Mult
 ### Migrations (urutan)
 - [ ] `users` — sudah ada dari Laravel, tambah kolom `name`
 - [ ] `categories` — `id, user_id, name, type ENUM('income','expense'), color, icon, timestamps`
-- [ ] `transactions` — `id, user_id, category_id, title, amount DECIMAL(15,2), type ENUM('income','expense'), date DATE, note TEXT nullable, timestamps`
+- [ ] `wallets` — `id, user_id, name, type ENUM('cash','bank','ewallet'), color, icon, balance DECIMAL(15,2) DEFAULT 0, timestamps`
+- [ ] `transactions` — `id, user_id, category_id, wallet_id, title, amount DECIMAL(15,2), type ENUM('income','expense'), date DATE, note TEXT nullable, timestamps`
 
 ### Models
-- [ ] `User` — `HasApiTokens`, `HasMany(Category)`, `HasMany(Transaction)`
+- [ ] `User` — `HasApiTokens`, `HasMany(Category)`, `HasMany(Wallet)`, `HasMany(Transaction)`
 - [ ] `Category` — `BelongsTo(User)`, `HasMany(Transaction)`, fillable: `[name, type, color, icon]`
-- [ ] `Transaction` — `BelongsTo(User)`, `BelongsTo(Category)`, fillable: `[category_id, title, amount, type, date, note]`
+- [ ] `Wallet` — `BelongsTo(User)`, `HasMany(Transaction)`, fillable: `[name, type, color, icon, balance]`
+  - Scope: saat register → auto-create 1 wallet cash via `User::created` event
+  - Validasi: tolak `POST /api/wallets` dengan `type=cash` jika user sudah punya 1
+- [ ] `Transaction` — `BelongsTo(User)`, `BelongsTo(Category)`, `BelongsTo(Wallet)`, fillable: `[category_id, wallet_id, title, amount, type, date, note]`
 
 ---
 
@@ -99,8 +103,22 @@ File: `app/Http/Controllers/Api/StatisticsController.php`
   - Query: `SUM(amount) WHERE type = 'income'` dan `SUM(amount) WHERE type = 'expense'` untuk bulan/tahun yang diminta
 - [ ] `GET /api/statistics/by-category?month=&year=` → array `{ category_id, category_name, type, total }`
   - Join `transactions` + `categories`, group by `category_id`
+- [ ] `GET /api/statistics/by-wallet?month=&year=` → array `{ wallet_id, wallet_name, wallet_type, income, expense, balance }`
+  - Join `transactions` + `wallets`, group by `wallet_id`
 - [ ] `GET /api/statistics/monthly?year=` → array 12 elemen `{ month, income, expense }`
   - Loop atau group by `MONTH(date)`
+
+---
+
+## Fase 6b — Export Endpoint
+
+File: `app/Http/Controllers/Api/ExportController.php`
+
+- [ ] `GET /api/export/transactions?month=&year=&format=csv`
+  - Query transactions milik user, filter bulan/tahun
+  - Generate CSV dengan kolom: `date, title, category, wallet, type, amount, note`
+  - Return `StreamedResponse` dengan header `Content-Disposition: attachment; filename=transactions-{year}-{month}.csv`
+  - Format `csv` saja di v1 (PDF masuk v2+)
 
 ---
 

@@ -57,6 +57,8 @@ File: `data/remote/ApiService.kt`
       @GET("auth/me") suspend fun me(): UserResponse
       @GET("categories") suspend fun getCategories(): List<CategoryResponse>
       @POST("categories") suspend fun createCategory(@Body body: CreateCategoryRequest): CategoryResponse
+      @GET("wallets") suspend fun getWallets(): List<WalletResponse>
+      @POST("wallets") suspend fun createWallet(@Body body: CreateWalletRequest): WalletResponse
       @GET("transactions") suspend fun getTransactions(@QueryMap params: Map<String, String>): List<TransactionResponse>
       @POST("transactions") suspend fun createTransaction(@Body body: CreateTransactionRequest): TransactionResponse
       @GET("statistics/summary") suspend fun getSummary(@Query("month") month: Int, @Query("year") year: Int): SummaryResponse
