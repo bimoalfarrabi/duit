@@ -1,0 +1,196 @@
+# 🌐 Backend API
+
+## Stack
+
+- Laravel 11, PHP 8.2+
+- MySQL 8.0+
+- Laravel Sanctum (auth)
+- Shared hosting compatible
+
+## Setup
+
+```bash
+composer create-project laravel/laravel backend
+composer require laravel/sanctum
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+php artisan migrate
+```
+
+## Response Format
+
+Semua response pakai format konsisten:
+
+```json
+{ "data": {...}, "message": "OK", "status": true }
+```
+
+Error validasi → HTTP 422 (Laravel default)
+Ownership violation → HTTP 403
+
+## Endpoints
+
+### Auth
+
+| Method | Endpoint | Auth | Deskripsi |
+|--------|----------|------|-----------|
+| POST | `/api/auth/register` | ❌ | Daftar akun baru |
+| POST | `/api/auth/login` | ❌ | Login, return token |
+| POST | `/api/auth/logout` | ✅ | Revoke token |
+| GET | `/api/auth/me` | ✅ | Data user aktif |
+
+**Register request:**
+```json
+{ "name": "Budi", "email": "budi@mail.com", "password": "secret123" }
+```
+
+**Login response:**
+```json
+{ "data": { "token": "1|abc...", "user": { "id": 1, "name": "Budi", "email": "budi@mail.com" } }, "status": true }
+```
+
+---
+
+### Wallets (Sumber Dana)
+
+| Method | Endpoint | Auth | Deskripsi |
+|--------|----------|------|-----------|
+| GET | `/api/wallets` | ✅ | List wallet milik user |
+| POST | `/api/wallets` | ✅ | Buat wallet baru |
+| PUT | `/api/wallets/{id}` | ✅ | Update wallet |
+| DELETE | `/api/wallets/{id}` | ✅ | Hapus wallet |
+
+**Business rules:**
+- `cash`: max 1 per user, dibuat otomatis saat register → `POST` dengan `type=cash` ditolak 422 jika sudah ada
+- `bank`/`ewallet`: tidak terbatas
+
+**Wallet object:**
+```json
+{ "id": 1, "name": "Cash", "type": "cash", "color": "#4CAF50", "icon": "wallet", "balance": 0 }
+```
+
+---
+
+### Categories
+
+| Method | Endpoint | Auth | Deskripsi |
+|--------|----------|------|-----------|
+| GET | `/api/categories` | ✅ | List kategori milik user |
+| POST | `/api/categories` | ✅ | Buat kategori baru |
+| PUT | `/api/categories/{id}` | ✅ | Update kategori |
+| DELETE | `/api/categories/{id}` | ✅ | Hapus kategori |
+
+**Category object:**
+```json
+{ "id": 1, "name": "Makan", "type": "expense", "color": "#FF5722", "icon": "food" }
+```
+
+---
+
+### Transactions
+
+| Method | Endpoint | Auth | Deskripsi |
+|--------|----------|------|-----------|
+| GET | `/api/transactions` | ✅ | List transaksi (dengan filter) |
+| POST | `/api/transactions` | ✅ | Tambah transaksi |
+| PUT | `/api/transactions/{id}` | ✅ | Update transaksi |
+| DELETE | `/api/transactions/{id}` | ✅ | Hapus transaksi |
+
+**Filter params (GET):** `?month=7&year=2026&type=expense&category_id=1&wallet_id=2`
+
+**Transaction request:**
+```json
+{
+  "title": "Makan siang",
+  "amount": 25000,
+  "type": "expense",
+  "category_id": 1,
+  "wallet_id": 1,
+  "date": "2026-07-03",
+  "note": "Nasi padang"
+}
+```
+
+**Transaction object:**
+```json
+{
+  "id": 1,
+  "title": "Makan siang",
+  "amount": 25000,
+  "type": "expense",
+  "date": "2026-07-03",
+  "note": "Nasi padang",
+  "category": { "id": 1, "name": "Makan", "type": "expense" },
+  "wallet": { "id": 1, "name": "Cash", "type": "cash" }
+}
+```
+
+---
+
+### Statistics
+
+| Method | Endpoint | Auth | Response |
+|--------|----------|------|----------|
+| GET | `/api/statistics/summary` | ✅ | `{ income, expense, balance }` bulan itu |
+| GET | `/api/statistics/by-category` | ✅ | Breakdown per kategori |
+| GET | `/api/statistics/by-wallet` | ✅ | Breakdown per wallet |
+| GET | `/api/statistics/monthly` | ✅ | Array 12 bulan |
+
+**Params:** `?month=7&year=2026` (summary, by-category, by-wallet) · `?year=2026` (monthly)
+
+**Summary response:**
+```json
+{ "data": { "income": 5000000, "expense": 1200000, "balance": 3800000 }, "status": true }
+```
+
+**By-wallet response:**
+```json
+{
+  "data": [
+    { "wallet_id": 1, "wallet_name": "Cash", "wallet_type": "cash", "income": 0, "expense": 150000, "balance": -150000 },
+    { "wallet_id": 2, "wallet_name": "BCA", "wallet_type": "bank", "income": 5000000, "expense": 1050000, "balance": 3950000 }
+  ]
+}
+```
+
+**Monthly response:**
+```json
+{
+  "data": [
+    { "month": 1, "income": 4500000, "expense": 1100000 },
+    { "month": 2, "income": 4800000, "expense": 1300000 }
+  ]
+}
+```
+
+---
+
+### Export
+
+| Method | Endpoint | Auth | Deskripsi |
+|--------|----------|------|-----------|
+| GET | `/api/export/transactions` | ✅ | Download CSV transaksi |
+
+**Params:** `?month=7&year=2026&format=csv`
+
+**Response:** File download CSV dengan kolom: `date, title, category, wallet, type, amount, note`
+
+---
+
+## Struktur Controller
+
+```
+app/Http/Controllers/Api/
+├── AuthController.php
+├── WalletController.php
+├── CategoryController.php
+├── TransactionController.php
+├── StatisticsController.php
+└── ExportController.php
+```
+
+## Security
+
+- Semua route kecuali `register` dan `login` di bawah `middleware('auth:sanctum')`
+- Setiap endpoint ownership-check: query selalu filter `user_id = auth()->id()`
+- Input validasi via `$request->validate([...])`
+- `.htaccess` forward `Authorization` header (wajib di shared hosting)

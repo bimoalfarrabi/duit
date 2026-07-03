@@ -34,12 +34,12 @@ Sebelum menyentuh kode apapun, baca dokumen yang relevan:
 
 | Pekerjaan | Baca dulu |
 |-----------|-----------|
-| Semua | [`docs/ROADMAP.md`](docs/ROADMAP.md) |
-| Fitur baru / bug | [`docs/prd/v1-mvp.md`](docs/prd/v1-mvp.md) |
-| Arsitektur / desain | [`docs/superpowers/specs/2026-07-03-personal-finance-ecosystem-design.md`](docs/superpowers/specs/2026-07-03-personal-finance-ecosystem-design.md) |
-| Implementasi Laravel | [`docs/superpowers/plans/2026-07-03-laravel-api-plan.md`](docs/superpowers/plans/2026-07-03-laravel-api-plan.md) |
-| Implementasi Astro | [`docs/superpowers/plans/2026-07-03-astro-dashboard-plan.md`](docs/superpowers/plans/2026-07-03-astro-dashboard-plan.md) |
-| Implementasi Android | [`docs/superpowers/plans/2026-07-03-android-app-plan.md`](docs/superpowers/plans/2026-07-03-android-app-plan.md) |
+| Semua | [`docs/01-project-overview.md`](docs/01-project-overview.md) + [`docs/07-roadmap.md`](docs/07-roadmap.md) |
+| Fitur baru / bug | [`docs/09-tasks.md`](docs/09-tasks.md) + [`docs/01-project-overview.md`](docs/01-project-overview.md) |
+| Arsitektur / desain | [`docs/02-architecture.md`](docs/02-architecture.md) |
+| Implementasi Laravel | [`docs/04-backend-api.md`](docs/04-backend-api.md) + [`docs/06-database.md`](docs/06-database.md) |
+| Implementasi Astro | [`docs/05-dashboard.md`](docs/05-dashboard.md) + [`docs/08-ui-ux.md`](docs/08-ui-ux.md) |
+| Implementasi Android | [`docs/03-mobile-app.md`](docs/03-mobile-app.md) |
 
 ---
 
@@ -47,12 +47,12 @@ Sebelum menyentuh kode apapun, baca dokumen yang relevan:
 
 **Setelah setiap perubahan**, update dokumen yang terpengaruh:
 
-- Fitur baru → update PRD (`docs/prd/`) dan implementation plan yang relevan
-- Perubahan schema DB → update design spec dan plan Laravel
-- Perubahan API endpoint → update design spec, PRD, dan plan Android (ApiService)
+- Fitur baru → update [`docs/09-tasks.md`](docs/09-tasks.md) dan [`docs/07-roadmap.md`](docs/07-roadmap.md)
+- Perubahan schema DB → update [`docs/06-database.md`](docs/06-database.md) dan [`docs/04-backend-api.md`](docs/04-backend-api.md)
+- Perubahan API endpoint → update [`docs/04-backend-api.md`](docs/04-backend-api.md) dan [`docs/03-mobile-app.md`](docs/03-mobile-app.md)
 - Perubahan business rule → update semua dokumen yang menyebutnya
-- Tambah/hapus screen Android → update plan Android
-- Tambah/hapus halaman Astro → update plan Astro
+- Tambah/hapus screen Android → update [`docs/03-mobile-app.md`](docs/03-mobile-app.md)
+- Tambah/hapus halaman Astro → update [`docs/05-dashboard.md`](docs/05-dashboard.md)
 
 Jangan pernah biarkan kode dan dokumentasi tidak sinkron.
 
