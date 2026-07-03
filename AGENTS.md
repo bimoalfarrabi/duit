@@ -165,3 +165,36 @@ Fitur ini ada di roadmap tapi **bukan v1** — tolak jika diminta sebelum v1 sel
 1. **Laravel API** — selesaikan dulu sebelum mulai Astro atau Android
 2. **Astro Dashboard** — bisa paralel setelah endpoint auth + statistics siap
 3. **Android App** — bisa mulai setelah auth + transaction endpoint siap
+
+---
+
+## Aturan Wajib untuk AI Agent
+
+### Testing
+
+Setiap perubahan di codebase — terutama yang menyentuh fitur — **wajib disertai unit test**.
+
+- **Laravel**: pakai PHPUnit (`tests/Feature/` untuk endpoint, `tests/Unit/` untuk logic)
+- **Android**: pakai JUnit4 + Mockito untuk ViewModel dan Repository
+- **Astro**: tidak ada unit test di v1 (SSR frontmatter trivial), tapi logic helper di `src/lib/` wajib di-test jika ada
+
+Tujuan: mendeteksi error dan bug tanpa harus menyentuh user.
+
+### Decision Making
+
+Setiap keputusan teknis yang tidak trivial **wajib dikonfirmasi ke user** sebelum diimplementasi.
+
+Yang termasuk decision making:
+- Pilihan library atau dependency baru
+- Perubahan struktur database atau schema
+- Perubahan flow auth atau security
+- Trade-off arsitektur (performa vs simplisitas, dll)
+- Sesuatu yang tidak ada di dokumentasi dan butuh interpretasi
+
+Format konfirmasi:
+```
+Saya akan [deskripsi keputusan].
+Alasan: [kenapa].
+Alternatif: [opsi lain jika ada].
+Lanjut?
+```
