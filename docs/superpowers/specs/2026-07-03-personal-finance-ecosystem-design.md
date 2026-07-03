@@ -100,9 +100,9 @@ Transactions
   DELETE /api/transactions/{id}
 
 Statistics
-  GET    /api/statistics/summary    ?month=&year=
-  GET    /api/statistics/by-category?month=&year=
-  GET    /api/statistics/monthly    ?year=
+  GET    /api/statistics/summary    ?month=&year=   → { income, expense, balance } bulan itu
+  GET    /api/statistics/by-category?month=&year=   → breakdown per kategori
+  GET    /api/statistics/monthly    ?year=           → array 12 bulan { month, income, expense }
 ```
 
 ### Auth Strategy
