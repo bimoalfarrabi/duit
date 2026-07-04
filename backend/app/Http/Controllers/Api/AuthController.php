@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -16,7 +17,7 @@ class AuthController extends Controller
         $data = $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
+            'password' => ['required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[0-9]/'],
         ]);
 
         $user  = User::create($data);
@@ -36,11 +37,14 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt($data)) {
+            Log::warning('failed_login', ['email' => $data['email'], 'ip' => $request->ip()]);
             return $this->error('Email atau password salah', 401);
         }
 
         $user  = Auth::user();
         $token = $user->createToken('auth_token')->plainTextToken;
+
+        Log::info('login_success', ['user_id' => $user->id, 'ip' => $request->ip()]);
 
         return $this->success([
             'token' => $token,
