@@ -2,6 +2,7 @@ package com.duit.app.ui.wallet
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.duit.app.data.remote.toUserMessage
 import com.duit.app.data.repository.WalletRepository
 import com.duit.app.domain.model.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +36,7 @@ class WalletViewModel @Inject constructor(private val walletRepository: WalletRe
                         hasCashWallet = wallets.any { it.type == "cash" }
                     )
                 }
-                .onFailure { _uiState.value = WalletUiState(error = it.message) }
+                .onFailure { _uiState.value = WalletUiState(error = it.toUserMessage()) }
         }
     }
 
@@ -43,7 +44,7 @@ class WalletViewModel @Inject constructor(private val walletRepository: WalletRe
         viewModelScope.launch {
             walletRepository.createWallet(name, type, color)
                 .onSuccess { load() }
-                .onFailure { _uiState.value = _uiState.value.copy(error = it.message) }
+                .onFailure { _uiState.value = _uiState.value.copy(error = it.toUserMessage()) }
         }
     }
 
@@ -51,7 +52,7 @@ class WalletViewModel @Inject constructor(private val walletRepository: WalletRe
         viewModelScope.launch {
             walletRepository.deleteWallet(id)
                 .onSuccess { load() }
-                .onFailure { _uiState.value = _uiState.value.copy(error = it.message) }
+                .onFailure { _uiState.value = _uiState.value.copy(error = it.toUserMessage()) }
         }
     }
 

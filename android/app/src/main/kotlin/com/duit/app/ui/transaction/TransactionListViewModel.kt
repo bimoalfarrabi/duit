@@ -2,6 +2,7 @@ package com.duit.app.ui.transaction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.duit.app.data.remote.toUserMessage
 import com.duit.app.data.repository.TransactionRepository
 import com.duit.app.data.repository.WalletRepository
 import com.duit.app.domain.model.Transaction
@@ -46,7 +47,7 @@ class TransactionListViewModel @Inject constructor(
             val wallets = walletRepository.getWallets().getOrDefault(emptyList())
             transactionRepository.getTransactions(params)
                 .onSuccess { _uiState.value = _uiState.value.copy(transactions = it, wallets = wallets, isLoading = false) }
-                .onFailure { _uiState.value = _uiState.value.copy(error = it.message, isLoading = false) }
+                .onFailure { _uiState.value = _uiState.value.copy(error = it.toUserMessage(), isLoading = false) }
         }
     }
 
@@ -64,7 +65,7 @@ class TransactionListViewModel @Inject constructor(
         viewModelScope.launch {
             transactionRepository.deleteTransaction(id)
                 .onSuccess { load() }
-                .onFailure { _uiState.value = _uiState.value.copy(error = it.message) }
+                .onFailure { _uiState.value = _uiState.value.copy(error = it.toUserMessage(), isLoading = false) }
         }
     }
 }

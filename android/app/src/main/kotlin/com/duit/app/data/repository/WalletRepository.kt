@@ -3,6 +3,7 @@ package com.duit.app.data.repository
 import com.duit.app.data.local.TokenStorage
 import com.duit.app.data.remote.ApiService
 import com.duit.app.data.remote.dto.CreateWalletRequest
+import com.duit.app.data.remote.toUserMessage
 import com.duit.app.domain.model.Wallet
 import javax.inject.Inject
 
@@ -27,4 +28,5 @@ class WalletRepository @Inject constructor(
     private fun handleUnauth(e: Throwable) {
         if (e.message?.contains("401") == true) tokenStorage.clearToken()
     }
+
 }

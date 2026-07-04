@@ -4,6 +4,7 @@ import com.duit.app.data.local.TokenStorage
 import com.duit.app.data.remote.ApiService
 import com.duit.app.data.remote.dto.LoginRequest
 import com.duit.app.data.remote.dto.RegisterRequest
+import com.duit.app.data.remote.toUserMessage
 import com.duit.app.domain.model.User
 import javax.inject.Inject
 

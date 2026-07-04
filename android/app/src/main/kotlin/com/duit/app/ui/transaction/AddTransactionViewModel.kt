@@ -2,6 +2,7 @@ package com.duit.app.ui.transaction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.duit.app.data.remote.toUserMessage
 import com.duit.app.data.repository.CategoryRepository
 import com.duit.app.data.repository.TransactionRepository
 import com.duit.app.data.repository.WalletRepository
@@ -55,7 +56,7 @@ class AddTransactionViewModel @Inject constructor(
                 note.ifBlank { null }
             )
                 .onSuccess { _uiState.value = _uiState.value.copy(isSuccess = true, isLoading = false) }
-                .onFailure { _uiState.value = _uiState.value.copy(error = it.message, isLoading = false) }
+                .onFailure { _uiState.value = _uiState.value.copy(error = it.toUserMessage(), isLoading = false) }
         }
     }
 

@@ -2,6 +2,7 @@ package com.duit.app.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.duit.app.data.remote.toUserMessage
 import com.duit.app.data.repository.TransactionRepository
 import com.duit.app.domain.model.Summary
 import com.duit.app.domain.model.Transaction
@@ -39,7 +40,7 @@ class HomeViewModel @Inject constructor(private val transactionRepository: Trans
             _uiState.value = HomeUiState(
                 summary = summaryResult.getOrNull(),
                 recentTransactions = txResult.getOrNull()?.take(5) ?: emptyList(),
-                error = summaryResult.exceptionOrNull()?.message ?: txResult.exceptionOrNull()?.message
+                error = summaryResult.exceptionOrNull()?.toUserMessage() ?: txResult.exceptionOrNull()?.toUserMessage()
             )
         }
     }

@@ -2,6 +2,7 @@ package com.duit.app.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.duit.app.data.remote.toUserMessage
 import com.duit.app.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +31,7 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
             _uiState.value = LoginUiState(isLoading = true)
             authRepository.login(email, password)
                 .onSuccess { _uiState.value = LoginUiState(isSuccess = true) }
-                .onFailure { _uiState.value = LoginUiState(error = it.message ?: "Login gagal") }
+                .onFailure { _uiState.value = LoginUiState(error = it.toUserMessage()) }
         }
     }
 

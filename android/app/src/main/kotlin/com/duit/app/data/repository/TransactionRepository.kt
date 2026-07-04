@@ -6,6 +6,7 @@ import com.duit.app.data.remote.dto.CreateTransactionRequest
 import com.duit.app.domain.model.Category
 import com.duit.app.domain.model.Summary
 import com.duit.app.domain.model.Transaction
+import com.duit.app.data.remote.toUserMessage
 import com.duit.app.domain.model.Wallet
 import javax.inject.Inject
 
