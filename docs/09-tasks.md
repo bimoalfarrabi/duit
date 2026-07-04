@@ -153,10 +153,10 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 - [x] `WalletScreen` + `WalletViewModel` (cash singleton check)
 
 ### QA
-- [ ] `./gradlew assembleDebug` sukses
-- [ ] Login + tambah transaksi flow end-to-end
-- [ ] Cash wallet hanya muncul 1 di WalletScreen
-- [ ] No-internet → Snackbar, tidak crash
+- [x] `./gradlew assembleDebug` sukses
+- [x] Login + tambah transaksi flow end-to-end
+- [x] Cash wallet hanya muncul 1 di WalletScreen
+- [x] No-internet → Snackbar, tidak crash
 
 ---
 
