@@ -1,0 +1,53 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+
+export const prerender = false;
+
+const now = new Date();
+const month = Number(Astro.url.searchParams.get('month') ?? now.getMonth() + 1);
+const year = Number(Astro.url.searchParams.get('year') ?? now.getFullYear());
+
+const monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+---
+
+<DashboardLayout title="Laporan">
+  <div class="max-w-lg">
+    <p class="text-sm text-slate-500 mb-6">Download riwayat transaksi dalam format CSV.</p>
+
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+      <h2 class="text-sm font-semibold text-slate-700 mb-4">Export Transaksi</h2>
+
+      <form method="GET" class="flex flex-wrap gap-3 mb-5">
+        <div>
+          <label class="block text-xs text-slate-500 mb-1">Bulan</label>
+          <select name="month" class="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            {monthNames.map((m, i) => (
+              <option value={i + 1} selected={month === i + 1}>{m}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-500 mb-1">Tahun</label>
+          <input name="year" type="number" value={year} min="2020" max="2099"
+            class="w-24 px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        </div>
+        <div class="flex items-end">
+          <button type="submit" class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition-colors">
+            Pilih Periode
+          </button>
+        </div>
+      </form>
+
+      <a
+        href={`/api/export?month=${month}&year=${year}`}
+        download={`transaksi-${year}-${String(month).padStart(2,'0')}.csv`}
+        class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+        </svg>
+        Download CSV — {monthNames[month - 1]} {year}
+      </a>
+    </div>
+  </div>
+</DashboardLayout>

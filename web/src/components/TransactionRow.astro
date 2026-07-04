@@ -1,0 +1,41 @@
+---
+import { formatRupiah } from '../lib/format';
+
+interface Props {
+  title: string;
+  category: string;
+  wallet: string;
+  date: string;
+  type: 'income' | 'expense';
+  amount: number;
+}
+
+const { title, category, wallet, date, type, amount } = Astro.props;
+
+const isIncome = type === 'income';
+const iconBg = isIncome ? 'bg-emerald-100' : 'bg-red-100';
+const iconColor = isIncome ? 'text-emerald-500' : 'text-red-500';
+const amountColor = isIncome ? 'text-emerald-500' : 'text-red-500';
+const amountPrefix = isIncome ? '+' : '-';
+---
+
+<div class="flex items-center gap-4 py-3 border-b border-slate-200 last:border-0">
+  <div class={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${iconBg}`}>
+    {isIncome ? (
+      <svg class={`w-5 h-5 ${iconColor}`} fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m0 0l-6-6m6 6l6-6" />
+      </svg>
+    ) : (
+      <svg class={`w-5 h-5 ${iconColor}`} fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19.5v-15m0 0l6 6m-6-6l-6 6" />
+      </svg>
+    )}
+  </div>
+  <div class="flex-1 min-w-0">
+    <p class="text-sm font-medium text-slate-900 truncate">{title}</p>
+    <p class="text-xs text-slate-500">{category} · {wallet} · {date}</p>
+  </div>
+  <p class={`text-sm font-semibold flex-shrink-0 ${amountColor}`}>
+    {amountPrefix}{formatRupiah(amount)}
+  </p>
+</div>

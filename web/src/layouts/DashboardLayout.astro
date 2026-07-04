@@ -1,0 +1,74 @@
+---
+interface Props {
+  title: string;
+  user?: string;
+}
+const { title, user = '' } = Astro.props;
+const path = new URL(Astro.request.url).pathname;
+---
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} — Duit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="bg-slate-50 font-sans text-slate-900">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-56 bg-white border-r border-slate-200 fixed inset-y-0 left-0 flex flex-col z-10">
+      <div class="px-6 py-5 border-b border-slate-200">
+        <span class="text-emerald-500 font-bold text-xl tracking-tight">Duit</span>
+      </div>
+      <nav class="flex-1 px-3 py-4 space-y-1">
+        <a href="/dashboard"
+          class={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${path === '/dashboard' ? 'bg-emerald-100 text-emerald-600' : 'text-slate-600 hover:bg-slate-100'}`}>
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+          </svg>
+          Dashboard
+        </a>
+        <a href="/transactions"
+          class={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${path === '/transactions' ? 'bg-emerald-100 text-emerald-600' : 'text-slate-600 hover:bg-slate-100'}`}>
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+          </svg>
+          Transaksi
+        </a>
+        <a href="/reports"
+          class={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${path === '/reports' ? 'bg-emerald-100 text-emerald-600' : 'text-slate-600 hover:bg-slate-100'}`}>
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          Laporan
+        </a>
+      </nav>
+      <div class="px-3 py-4 border-t border-slate-200">
+        <a href="/api/logout" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+          </svg>
+          Keluar
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="ml-56 flex-1 flex flex-col min-h-screen">
+      <!-- Top bar -->
+      <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+        <h1 class="text-lg font-semibold text-slate-900">{title}</h1>
+        {user && <span class="text-sm text-slate-500">{user}</span>}
+      </header>
+
+      <!-- Page content -->
+      <main class="flex-1 p-6">
+        <slot />
+      </main>
+    </div>
+  </div>
+</body>
+</html>
