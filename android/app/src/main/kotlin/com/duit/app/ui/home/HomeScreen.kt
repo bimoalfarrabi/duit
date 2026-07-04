@@ -5,8 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,26 +25,38 @@ import java.util.Locale
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
-    val refreshState = rememberPullToRefreshState()
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Duit", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold) },
+                actions = {
+                    IconButton(onClick = { viewModel.load() }, enabled = !uiState.isLoading) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                    }
+                }
+            )
+        }
+    ) { padding ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
+            modifier = Modifier.fillMaxSize().padding(padding),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item {
-                Text("Duit", style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold)
                 Text("Bulan ini", style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(Modifier.height(8.dp))
             }
 
             item {
-                if (uiState.summary != null) {
+                if (uiState.isLoading) {
+                    Box(Modifier.fillMaxWidth().height(80.dp), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                } else if (uiState.summary != null) {
                     SummaryCards(uiState.summary!!)
-                } else if (!uiState.isLoading) {
+                } else {
                     Text("Gagal memuat ringkasan", color = Danger)
                 }
             }
@@ -63,34 +75,15 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
                 }
             }
         }
-
-        PullToRefreshContainer(
-            state = refreshState,
-            modifier = Modifier.align(Alignment.TopCenter)
-        )
-    }
-
-    LaunchedEffect(refreshState.isRefreshing) {
-        if (refreshState.isRefreshing) {
-            viewModel.load()
-            refreshState.endRefresh()
-        }
     }
 }
 
 @Composable
 private fun SummaryCards(summary: Summary) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         SummaryCard("Pemasukan", summary.income, Primary, Modifier.weight(1f))
         SummaryCard("Pengeluaran", summary.expense, Danger, Modifier.weight(1f))
-        SummaryCard(
-            "Saldo", summary.balance,
-            if (summary.balance >= 0) Primary else Danger,
-            Modifier.weight(1f)
-        )
+        SummaryCard("Saldo", summary.balance, if (summary.balance >= 0) Primary else Danger, Modifier.weight(1f))
     }
 }
 
@@ -101,12 +94,8 @@ private fun SummaryCard(label: String, amount: Double, color: androidx.compose.u
             Text(label, style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(4.dp))
-            Text(
-                formatRupiah(amount),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = color
-            )
+            Text(formatRupiah(amount), style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold, color = color)
         }
     }
 }
@@ -114,17 +103,11 @@ private fun SummaryCard(label: String, amount: Double, color: androidx.compose.u
 @Composable
 private fun TransactionItem(tx: Transaction) {
     Card(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier.padding(12.dp).fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(modifier = Modifier.padding(12.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(tx.title, style = MaterialTheme.typography.titleMedium)
-                Text(
-                    "${tx.category.name} · ${tx.date}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Text("${tx.category.name} · ${tx.date}", style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Text(
                 "${if (tx.type == "income") "+" else "-"}${formatRupiah(tx.amount)}",
@@ -138,16 +121,12 @@ private fun TransactionItem(tx: Transaction) {
 
 @Composable
 private fun EmptyTransactions() {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(Icons.Default.Person, contentDescription = null,
-            modifier = Modifier.size(48.dp), tint = TextMuted)
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(48.dp), tint = TextMuted)
         Spacer(Modifier.height(8.dp))
         Text("Belum ada transaksi", color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text("Tambah transaksi pertamamu", style = MaterialTheme.typography.bodyMedium,
-            color = TextMuted)
+        Text("Tambah transaksi pertamamu", style = MaterialTheme.typography.bodyMedium, color = TextMuted)
     }
 }
 
