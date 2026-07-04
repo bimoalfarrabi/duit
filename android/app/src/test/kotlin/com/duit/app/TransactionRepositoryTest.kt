@@ -84,9 +84,9 @@ class TransactionRepositoryTest {
         val result = repository.getSummary()
 
         assertTrue(result.isSuccess)
-        assertEquals(5_000_000.0, result.getOrNull()?.income, 0.01)
-        assertEquals(25_000.0, result.getOrNull()?.expense, 0.01)
-        assertEquals(4_975_000.0, result.getOrNull()?.balance, 0.01)
+        assertEquals(5_000_000.0, result.getOrNull()!!.income, 0.01)
+        assertEquals(25_000.0, result.getOrNull()!!.expense, 0.01)
+        assertEquals(4_975_000.0, result.getOrNull()!!.balance, 0.01)
     }
 
     @Test
