@@ -9,7 +9,7 @@ if (Astro.request.method === 'POST') {
   const email = form.get('email') as string;
   const password = form.get('password') as string;
   try {
-    const res = await fetch(`${import.meta.env.API_BASE_URL}/auth/login`, {
+    const res = await fetch(`${import.meta.env.API_BASE_URL ?? process.env.API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ email, password }),
