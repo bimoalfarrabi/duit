@@ -56,11 +56,11 @@ Tidak ada token → redirect /login
 | Backend framework | Laravel | 12 |
 | Auth | Laravel Sanctum | bundled |
 | Database | MySQL | 8.0+ |
-| Web framework | Astro | 4+ (SSR) |
-| Web styling | Tailwind CSS | 3 |
-| Web charts | Chart.js | via `<script>` |
-| Mobile language | Kotlin | 1.9+ |
-| Mobile UI | Jetpack Compose | latest stable |
+| Web framework | Astro | 7 (SSR) |
+| Web styling | Tailwind CSS | 4 |
+| Web charts | Chart.js | 4 |
+| Mobile language | Kotlin | 2.0+ |
+| Mobile UI | Jetpack Compose | BOM 2024.12 |
 | Mobile HTTP | Retrofit + OkHttp | 2.11 / 4.12 |
 | Mobile DI | Hilt | 2.51 |
 | Mobile storage | EncryptedSharedPreferences | Security Crypto |
@@ -73,9 +73,11 @@ Tidak ada token → redirect /login
 
 ## Hosting (Production)
 
-- Shared hosting PHP — tidak ada Docker, tidak ada queue worker
-- `.htaccess` wajib forward `Authorization` header
-- `SANCTUM_STATEFUL_DOMAINS` dikonfigurasi untuk domain Astro
+- **Backend API**: `https://api.duit.viasco.my.id` — shared hosting cPanel, PHP 8.2, Laravel di `~/duit/backend/`
+- **Web Dashboard**: `https://duit.viasco.my.id` — CloudLinux Passenger (Node.js 22), Astro SSR di `~/duit/web/`
+- **Subdomain terpisah** wajib — satu `.htaccess` tidak bisa serve dua app sekaligus
+- **Env vars** di-inject via cPanel Node.js App → tersedia di `process.env`, bukan `import.meta.env`
+- **Sparse checkout** di server: hanya `backend/`, `web/`, `docs/` — `android/` tidak di-checkout
 
 ## Urutan Development
 

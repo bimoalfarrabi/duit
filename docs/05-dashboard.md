@@ -2,23 +2,30 @@
 
 ## Stack
 
-- Astro 4+ (`output: 'server'`, SSR hybrid mode)
-- Tailwind CSS
-- Chart.js via `<script>` tag
-- Node.js adapter
+- Astro 7 (`output: 'server'`, SSR mode)
+- Tailwind CSS 4
+- Chart.js 4
+- Node.js adapter (`@astrojs/node` standalone mode)
 
 ## Setup
 
 ```bash
 npm create astro@latest web -- --template minimal --typescript strict
-npm install @astrojs/node tailwindcss @astrojs/tailwind
-# astro.config.mjs: output: 'server', adapter: node()
+npm install @astrojs/node @tailwindcss/vite tailwindcss chart.js
+# astro.config.mjs: output: 'server', adapter: node({ mode: 'standalone' })
 ```
 
-`.env`:
+`.env` (lokal):
 ```
-API_BASE_URL=http://localhost/api
+API_BASE_URL=http://localhost:8000/api
 ```
+
+`.env.production` (gitignored — set via cPanel Node.js App env vars di production):
+```
+API_BASE_URL=https://api.duit.viasco.my.id/api
+```
+
+> **Catatan production**: `import.meta.env.API_BASE_URL` di-bake sebagai string `"undefined"` oleh Vite saat build. Gunakan `process.env.API_BASE_URL` langsung di server-side code — Passenger (cPanel) inject env vars ke `process.env`.
 
 ## Auth Flow
 

@@ -4,7 +4,7 @@
 
 | Versi | Fokus | Status |
 |-------|-------|--------|
-| **v1** | Input manual, Laravel API, Astro dashboard | 🟡 Pending Deploy |
+| **v1** | Input manual, Laravel API, Astro dashboard | ✅ Live |
 | **v2** | Budget & savings | ⬜ Backlog |
 | **v3** | OCR scan struk | ⬜ Backlog |
 | **v4** | Voice input | ⬜ Backlog |

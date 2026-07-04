@@ -162,9 +162,18 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 
 ## Done Criteria (v1 Complete)
 
-- [ ] Semua endpoint Laravel → `php artisan test` hijau
-- [ ] Deploy backend ke shared hosting → berfungsi
-- [ ] Astro build + deploy → `npm run build` sukses
-- [ ] Android APK debug build sukses
+- [x] Semua endpoint Laravel → `php artisan test` hijau (19/19)
+- [x] Deploy backend ke shared hosting → berfungsi (`api.duit.viasco.my.id`)
+- [x] Astro build + deploy → `npm run build` sukses (`duit.viasco.my.id`)
+- [x] Android APK debug build sukses
 - [ ] End-to-end: tambah transaksi di Android → muncul di dashboard web
 - [ ] Data isolation: user A tidak bisa lihat data user B
+
+## Deploy Notes (Production)
+
+- **Backend API**: `https://api.duit.viasco.my.id/api` — Laravel di shared hosting cPanel, PHP 8.2
+- **Web Dashboard**: `https://duit.viasco.my.id` — Astro SSR via CloudLinux Passenger (Node.js 22)
+- **Subdomain terpisah**: api.* untuk Laravel, duit.* untuk Astro — sharing doc root tidak memungkinkan satu `.htaccess`
+- **`API_BASE_URL`**: inject via cPanel Node.js App env vars (`process.env`), bukan `import.meta.env` — Vite bake string `"undefined"` saat build jika tidak ada di `.env`
+- **CSRF**: `checkOrigin: false` di `astro.config.mjs` — Astro 4.9+ block form POST tanpa ini
+- **`App\Http\Middleware\Authenticate`**: override `redirectTo()` → `null` + alias di `bootstrap/app.php` — tanpa ini Laravel cari route `[login]` dan throw 500
