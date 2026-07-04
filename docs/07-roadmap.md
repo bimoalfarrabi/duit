@@ -36,6 +36,10 @@
 - Notifikasi: budget hampir habis, target tercapai
 - Local cache Android (offline-first)
 - Room database di Android
+- **Auth lanjutan** (manual, tanpa Fortify):
+  - Password reset via email (token-based, expire 1 jam)
+  - Email verification saat register
+  - Two-factor authentication (TOTP / Google Authenticator)
 
 ---
 

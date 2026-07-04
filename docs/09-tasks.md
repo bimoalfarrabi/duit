@@ -177,3 +177,32 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 - **`API_BASE_URL`**: inject via cPanel Node.js App env vars (`process.env`), bukan `import.meta.env` — Vite bake string `"undefined"` saat build jika tidak ada di `.env`
 - **CSRF**: `checkOrigin: false` di `astro.config.mjs` — Astro 4.9+ block form POST tanpa ini
 - **`App\Http\Middleware\Authenticate`**: override `redirectTo()` → `null` + alias di `bootstrap/app.php` — tanpa ini Laravel cari route `[login]` dan throw 500
+
+---
+
+## Rencana v2 — Auth Lanjutan
+
+> Diimplementasi manual di `AuthController` tanpa Fortify — pure API, no Blade.
+
+### Password Reset
+- [ ] Migration: tabel `password_reset_tokens` (email, token hashed, created_at)
+- [ ] `POST /api/auth/forgot-password` — kirim email dengan signed token (expire 1 jam)
+- [ ] `POST /api/auth/reset-password` — verifikasi token + update password
+- [ ] Konfigurasi Laravel mailer di `.env` (SMTP/Mailgun)
+- [ ] Feature test: request reset + reset sukses + token expired
+
+### Email Verification
+- [ ] Tambah kolom `email_verified_at` ke tabel `users` (sudah ada di default Laravel)
+- [ ] `POST /api/auth/email/verification-notification` — kirim ulang link verifikasi
+- [ ] `GET /api/auth/email/verify/{id}/{hash}` — verifikasi via signed URL
+- [ ] Middleware `verified` untuk endpoint yang butuh email terverifikasi
+- [ ] Feature test: verifikasi sukses + link expired
+
+### Two-Factor Authentication (TOTP)
+- [ ] Migration: kolom `two_factor_secret` dan `two_factor_confirmed_at` di `users`
+- [ ] `POST /api/auth/two-factor-authentication` — enable 2FA, return QR code
+- [ ] `DELETE /api/auth/two-factor-authentication` — disable 2FA
+- [ ] `POST /api/auth/two-factor-challenge` — verifikasi TOTP code saat login
+- [ ] Login flow: jika 2FA aktif, token tidak dikembalikan sampai TOTP diverifikasi
+- [ ] Android: screen TOTP input setelah login sukses jika 2FA aktif
+- [ ] Feature test: enable → login challenge → disable flow
