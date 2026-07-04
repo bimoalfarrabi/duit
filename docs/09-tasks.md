@@ -81,37 +81,37 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 ## 2. Astro Dashboard (`web/`)
 
 ### Setup
-- [ ] `npm create astro@latest web`
-- [ ] Install `@astrojs/node`, `tailwindcss`, `@astrojs/tailwind`
-- [ ] Set `output: 'server'`, `adapter: node()`
-- [ ] `.env`: `API_BASE_URL`
+- [x] `npm create astro@latest web`
+- [x] Install `@astrojs/node`, `@tailwindcss/vite`, `tailwindcss` (Tailwind v4 — `@astrojs/tailwind` deprecated)
+- [x] Set `output: 'server'`, `adapter: node()`
+- [x] `.env`: `API_BASE_URL`
 
 ### Auth
-- [ ] Middleware `src/middleware/index.ts` — cookie check + redirect
-- [ ] API helper `src/lib/api.ts` — `apiFetch<T>()`
+- [x] Middleware `src/middleware/index.ts` — cookie check + redirect
+- [x] API helper `src/lib/api.ts` — `apiFetch<T>()`
 
 ### Halaman
-- [ ] `/login` — form + set cookie
-- [ ] `/dashboard` — summary cards + charts + wallet breakdown
-- [ ] `/transactions` — tabel + filter form
-- [ ] `/reports` — link download CSV
-- [ ] `/api/logout.ts` — hapus cookie + redirect
+- [x] `/login` — form + set cookie
+- [x] `/dashboard` — summary cards + charts + wallet breakdown
+- [x] `/transactions` — tabel + filter form
+- [x] `/reports` — link download CSV via proxy `/api/export`
+- [x] `/api/logout.ts` — hapus cookie + redirect
 
 ### Komponen
-- [ ] `DashboardLayout.astro` — sidebar + top bar
-- [ ] `StatCard.astro` — card KPI
-- [ ] `TransactionRow.astro` — baris transaksi
+- [x] `DashboardLayout.astro` — sidebar + top bar
+- [x] `StatCard.astro` — card KPI
+- [x] `TransactionRow.astro` — baris transaksi
 
 ### Charts
-- [ ] Grafik batang bulanan (Chart.js)
-- [ ] Grafik donut per kategori (Chart.js)
-- [ ] Card saldo per wallet
+- [x] Grafik batang bulanan (Chart.js via CDN + define:vars)
+- [x] Grafik donut per kategori (Chart.js)
+- [x] Card saldo per wallet
 
 ### QA
-- [ ] `npm run build` sukses
-- [ ] `/dashboard` redirect ke `/login` tanpa token
-- [ ] Data match API
-- [ ] Tidak ada client-side fetch
+- [x] `npm run build` sukses
+- [x] `/dashboard` redirect ke `/login` tanpa token (via middleware)
+- [x] Data fetch server-side di frontmatter — tidak ada client-side fetch
+- [-] Data match API (perlu server aktif untuk verify)
 
 ---
 
