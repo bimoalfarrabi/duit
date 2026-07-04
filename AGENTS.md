@@ -40,8 +40,9 @@ Sebelum menyentuh kode apapun, baca dokumen yang relevan:
 | Fitur baru / bug | [`docs/09-tasks.md`](docs/09-tasks.md) + [`docs/01-project-overview.md`](docs/01-project-overview.md) |
 | Arsitektur / desain | [`docs/02-architecture.md`](docs/02-architecture.md) |
 | Implementasi Laravel | [`docs/04-backend-api.md`](docs/04-backend-api.md) + [`docs/06-database.md`](docs/06-database.md) |
-| Implementasi Astro | [`docs/05-dashboard.md`](docs/05-dashboard.md) + [`docs/08-ui-ux.md`](docs/08-ui-ux.md) |
-| Implementasi Android | [`docs/03-mobile-app.md`](docs/03-mobile-app.md) |
+| Implementasi Astro | [`docs/05-dashboard.md`](docs/05-dashboard.md) + [`docs/08-ui-ux.md`](docs/08-ui-ux.md) + [`DESIGN.md`](DESIGN.md) |
+| Implementasi Android | [`docs/03-mobile-app.md`](docs/03-mobile-app.md) + [`DESIGN.md`](DESIGN.md) |
+| UI/UX & design system | [`DESIGN.md`](DESIGN.md) + [`docs/08-ui-ux.md`](docs/08-ui-ux.md) |
 
 ---
 
