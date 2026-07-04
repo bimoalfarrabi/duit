@@ -1,5 +1,5 @@
 export async function apiFetch<T>(path: string, token: string, init?: RequestInit): Promise<T> {
-  const base = import.meta.env.API_BASE_URL ?? process.env.API_BASE_URL;
+  const base = process.env.API_BASE_URL;
   const res = await fetch(`${base}${path}`, {
     ...init,
     headers: {
