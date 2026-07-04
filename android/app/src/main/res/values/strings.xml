@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Duit</string>
+    <string name="login">Masuk</string>
+    <string name="email">Email</string>
+    <string name="password">Kata Sandi</string>
+    <string name="income">Pemasukan</string>
+    <string name="expense">Pengeluaran</string>
+    <string name="balance">Saldo</string>
+    <string name="home">Beranda</string>
+    <string name="history">Riwayat</string>
+    <string name="add">Tambah</string>
+    <string name="wallet">Dompet</string>
+    <string name="category">Kategori</string>
+    <string name="save">Simpan</string>
+    <string name="cancel">Batal</string>
+    <string name="delete">Hapus</string>
+    <string name="confirm_delete">Hapus transaksi ini?</string>
+    <string name="empty_transactions">Belum ada transaksi</string>
+    <string name="empty_wallets">Belum ada dompet</string>
+    <string name="empty_categories">Belum ada kategori</string>
+    <string name="error_network">Tidak ada koneksi internet</string>
+    <string name="error_generic">Terjadi kesalahan, coba lagi</string>
+</resources>

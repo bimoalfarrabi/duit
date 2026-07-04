@@ -1,0 +1,9 @@
+package com.duit.app.domain.model
+
+data class Category(
+    val id: Int,
+    val name: String,
+    val type: String,
+    val color: String,
+    val icon: String
+)

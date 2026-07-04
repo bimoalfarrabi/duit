@@ -118,39 +118,39 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 ## 3. Android App (`android/`)
 
 ### Setup
-- [ ] Buat project: Empty Activity, Kotlin, Compose
-- [ ] Tambah dependencies: Hilt, Retrofit, OkHttp, Navigation, Security
-- [ ] `@HiltAndroidApp` di Application class
-- [ ] `BASE_URL` di `BuildConfig`
+- [x] Buat project: Empty Activity, Kotlin, Compose
+- [x] Tambah dependencies: Hilt, Retrofit, OkHttp, Navigation, Security
+- [x] `@HiltAndroidApp` di Application class
+- [-] `BASE_URL` di `BuildConfig` (hardcoded di NetworkModule, cukup untuk v1)
 
 ### Network Layer
-- [ ] `ApiService.kt` — semua endpoint termasuk wallet
-- [ ] `AuthInterceptor.kt` — inject Bearer token
-- [ ] `NetworkModule.kt` — provide OkHttp + Retrofit + ApiService
+- [x] `ApiService.kt` — semua endpoint termasuk wallet
+- [x] `AuthInterceptor.kt` — inject Bearer token
+- [x] `NetworkModule.kt` — provide OkHttp + Retrofit + ApiService
 
 ### Data Layer
-- [ ] `TokenStorage.kt` — EncryptedSharedPreferences wrapper
-- [ ] `AuthRepository.kt`
-- [ ] `CategoryRepository.kt`
-- [ ] `WalletRepository.kt`
-- [ ] `TransactionRepository.kt`
-- [ ] `StatisticsRepository.kt`
+- [x] `TokenStorage.kt` — EncryptedSharedPreferences wrapper
+- [x] `AuthRepository.kt`
+- [x] `CategoryRepository.kt`
+- [x] `WalletRepository.kt`
+- [x] `TransactionRepository.kt`
+- [-] `StatisticsRepository.kt` (digabung ke TransactionRepository.getSummary())
 
 ### Domain Models
-- [ ] `User`, `Category`, `Wallet`, `Transaction`, `Summary`
+- [x] `User`, `Category`, `Wallet`, `Transaction`, `Summary`
 
 ### Navigation
-- [ ] `AppNavigation.kt` — AuthGraph + MainGraph
-- [ ] Bottom nav: Home / Add / History / Wallet
-- [ ] Startup: cek token → route ke graph yang tepat
+- [x] `NavGraph.kt` — AuthGraph + MainGraph
+- [x] Bottom nav: Home / Add / History / Wallet
+- [x] Startup: cek token → route ke graph yang tepat
 
 ### Screens
-- [ ] `LoginScreen` + `LoginViewModel`
-- [ ] `HomeScreen` + `HomeViewModel`
-- [ ] `AddTransactionScreen` + `AddTransactionViewModel` (include wallet picker)
-- [ ] `TransactionListScreen` + `TransactionListViewModel` (filter wallet)
-- [ ] `CategoryScreen` + `CategoryViewModel`
-- [ ] `WalletScreen` + `WalletViewModel` (cash singleton check)
+- [x] `LoginScreen` + `LoginViewModel`
+- [x] `HomeScreen` + `HomeViewModel`
+- [x] `AddTransactionScreen` + `AddTransactionViewModel` (include wallet picker)
+- [x] `TransactionListScreen` + `TransactionListViewModel` (filter wallet)
+- [x] `CategoryScreen` + `CategoryViewModel`
+- [x] `WalletScreen` + `WalletViewModel` (cash singleton check)
 
 ### QA
 - [ ] `./gradlew assembleDebug` sukses
