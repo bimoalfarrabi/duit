@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import com.duit.app.ui.home.HomeScreen
 import com.duit.app.ui.transaction.AddTransactionScreen
 import com.duit.app.ui.transaction.TransactionListScreen
 import com.duit.app.ui.wallet.WalletScreen
+
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
     object Home : Screen("home", "Beranda", Icons.Default.Home)
     object Add : Screen("add_transaction", "Tambah", Icons.Default.Add)
@@ -32,6 +34,14 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
 }
 
 val bottomNavItems = listOf(Screen.Home, Screen.History, Screen.Wallet)
+
+private fun routeTitle(route: String?): String = when (route) {
+    Screen.Home.route -> "Duit"
+    Screen.History.route -> "Riwayat"
+    Screen.Wallet.route -> "Dompet"
+    "categories" -> "Kategori"
+    else -> "Duit"
+}
 
 @Composable
 fun NavGraph(tokenStorage: TokenStorage = hiltViewModel<NavViewModel>().tokenStorage) {
@@ -56,18 +66,33 @@ fun NavGraph(tokenStorage: TokenStorage = hiltViewModel<NavViewModel>().tokenSto
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(onLogout: () -> Unit) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val currentRoute = currentDestination?.route
 
-    // Hide bottom bar on AddTransaction
-    val showBottomBar = currentDestination?.route != Screen.Add.route
+    val showBottomBar = currentRoute != Screen.Add.route
 
     Scaffold(
+        topBar = {
+            if (showBottomBar) {
+                TopAppBar(
+                    title = { Text(routeTitle(currentRoute)) },
+                    actions = {
+                        if (currentRoute == Screen.Home.route) {
+                            IconButton(onClick = onLogout) {
+                                Icon(Icons.Default.Person, contentDescription = "Logout")
+                            }
+                        }
+                    }
+                )
+            }
+        },
         floatingActionButton = {
-            if (currentDestination?.route == Screen.Home.route) {
+            if (currentRoute == Screen.Home.route) {
                 FloatingActionButton(onClick = {
                     navController.navigate(Screen.Add.route) {
                         launchSingleTop = true
