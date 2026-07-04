@@ -69,7 +69,7 @@ Tidak ada token → redirect /login
 
 - **Backend**: XAMPP (Apache port 80, MySQL port 3306)
 - **Web**: Node.js 20+, `npm run dev`
-- **Android**: Android Studio, min SDK 26 (Android 8.0)
+- **Android**: Android Studio, min SDK 31 (Android 12)
 
 ## Hosting (Production)
 

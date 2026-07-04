@@ -225,27 +225,117 @@ Label selalu di atas field — bukan placeholder-only.
 
 ---
 
-## Android: Jetpack Compose
+## Android: Jetpack Compose + Material Design 3
 
-- Gunakan `MaterialTheme` dengan color scheme berbasis token di atas
-- `Surface` untuk semua card dan bottom sheet
-- `Scaffold` dengan `BottomNavigation` untuk main graph
-- `LazyColumn` untuk semua list (tidak ada nested scroll)
-- `ModalBottomSheet` untuk form tambah kategori/wallet
+Aplikasi Android menggunakan **Material Design 3** dengan **dynamic colors (Monet)** — warna UI mengikuti wallpaper user secara otomatis (Android 12+).
 
-**Warna di Compose:**
+### Dynamic Color Setup
+
 ```kotlin
-val EmeraldPrimary = Color(0xFF10B981)
-val EmeraldDark = Color(0xFF059669)
-val EmeraldLight = Color(0xFFD1FAE5)
-val DangerRed = Color(0xFFEF4444)
-val DangerLight = Color(0xFFFEE2E2)
-val Background = Color(0xFFF8FAFC)
-val Surface = Color(0xFFFFFFFF)
-val TextPrimary = Color(0xFF0F172A)
-val TextSecondary = Color(0xFF64748B)
-val Border = Color(0xFFE2E8F0)
+// MainActivity.kt
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            PersonalFinanceTheme { /* ... */ }
+        }
+    }
+}
+
+// ui/theme/Theme.kt
+@Composable
+fun PersonalFinanceTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = true,  // Android 12+ Monet
+    content: @Composable () -> Unit
+) {
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context)
+            else dynamicLightColorScheme(context)
+        }
+        darkTheme -> darkColorScheme(
+            primary = Color(0xFF10B981),
+            secondary = Color(0xFF059669),
+            error = Color(0xFFEF4444),
+        )
+        else -> lightColorScheme(
+            primary = Color(0xFF10B981),
+            secondary = Color(0xFF059669),
+            error = Color(0xFFEF4444),
+        )
+    }
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = PersonalFinanceTypography,
+        content = content
+    )
+}
 ```
+
+### Penggunaan Warna di Komponen
+
+Selalu gunakan token dari `MaterialTheme.colorScheme` — jangan hardcode hex di komponen:
+
+```kotlin
+// Gunakan ini:
+MaterialTheme.colorScheme.primary          // CTA, active state
+MaterialTheme.colorScheme.surface          // Card background
+MaterialTheme.colorScheme.onSurface        // Text di atas surface
+MaterialTheme.colorScheme.surfaceVariant   // Card secondary, chip bg
+MaterialTheme.colorScheme.error            // Expense indicator, error
+
+// Fallback warna semantik jika tidak ada MD3 equivalent:
+val IncomeGreen = Color(0xFF10B981)   // income indicator
+val ExpenseRed = Color(0xFFEF4444)    // expense indicator
+```
+
+### Warna Income/Expense
+
+MD3 tidak punya token semantik untuk income/expense — tetap hardcode dua ini karena bermakna finansial, bukan brand:
+
+```kotlin
+// ui/theme/Color.kt
+val IncomeGreen = Color(0xFF10B981)
+val IncomeGreenContainer = Color(0xFFD1FAE5)
+val ExpenseRed = Color(0xFFEF4444)
+val ExpenseRedContainer = Color(0xFFFEE2E2)
+```
+
+### MD3 Komponen yang Dipakai
+
+| UI Element | MD3 Component |
+|------------|---------------|
+| Card | `ElevatedCard` / `OutlinedCard` |
+| Input field | `OutlinedTextField` |
+| Primary button | `Button` (filled) |
+| Secondary button | `OutlinedButton` |
+| FAB | `FloatingActionButton` |
+| Bottom nav | `NavigationBar` + `NavigationBarItem` |
+| Bottom sheet | `ModalBottomSheet` |
+| List item | `ListItem` |
+| Chip/badge | `AssistChip` / `FilterChip` |
+| Dialog konfirmasi | `AlertDialog` |
+
+### Typography (MD3)
+
+```kotlin
+// ui/theme/Type.kt
+val PersonalFinanceTypography = Typography(
+    displayLarge  = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.Bold, fontSize = 32.sp),
+    headlineMedium = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.SemiBold, fontSize = 24.sp),
+    titleLarge    = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.SemiBold, fontSize = 20.sp),
+    titleMedium   = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.SemiBold, fontSize = 16.sp),
+    bodyMedium    = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.Normal, fontSize = 14.sp),
+    labelSmall    = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.Medium, fontSize = 12.sp),
+)
+```
+
+### Min SDK
+
+**Min SDK: 31 (Android 12)** — wajib untuk dynamic color (Monet). Target SDK: 34.
 
 ---
 

@@ -11,7 +11,7 @@
 
 ## Setup Project
 
-- Min SDK: 26 (Android 8.0)
+- Min SDK: 31 (Android 12)
 - Target SDK: 34
 - Android Studio Hedgehog+
 
