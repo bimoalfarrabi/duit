@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.lifecycle.runtime)
     implementation(libs.coroutines.android)
     implementation(libs.core.ktx)
+    implementation("androidx.appcompat:appcompat:1.6.1")
     debugImplementation(libs.compose.ui.tooling)
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
