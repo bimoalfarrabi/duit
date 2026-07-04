@@ -30,7 +30,7 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
     object Home : Screen("home", "Beranda", Icons.Default.Home)
     object Add : Screen("add_transaction", "Tambah", Icons.Default.Add)
     object History : Screen("transactions", "Riwayat", Icons.Default.List)
-    object Wallet : Screen("wallets", "Dompet", Icons.Default.AccountBalanceWallet)
+    object Wallet : Screen("wallets", "Dompet", Icons.Default.AccountBox)
 }
 
 val bottomNavItems = listOf(Screen.Home, Screen.Add, Screen.History, Screen.Wallet)
