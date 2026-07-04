@@ -33,7 +33,7 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
     object Wallet : Screen("wallets", "Dompet", Icons.Default.AccountBox)
 }
 
-val bottomNavItems = listOf(Screen.Home, Screen.Add, Screen.History, Screen.Wallet)
+val bottomNavItems = listOf(Screen.Home, Screen.History, Screen.Wallet)
 
 @Composable
 fun NavGraph(tokenStorage: TokenStorage = hiltViewModel<NavViewModel>().tokenStorage) {
@@ -68,6 +68,17 @@ fun MainScreen(onLogout: () -> Unit) {
     val showBottomBar = currentDestination?.route != Screen.Add.route
 
     Scaffold(
+        floatingActionButton = {
+            if (showBottomBar) {
+                FloatingActionButton(onClick = {
+                    navController.navigate(Screen.Add.route) {
+                        launchSingleTop = true
+                    }
+                }) {
+                    Icon(Icons.Default.Add, contentDescription = "Tambah Transaksi")
+                }
+            }
+        },
         bottomBar = {
             if (showBottomBar) {
                 NavigationBar {
