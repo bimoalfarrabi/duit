@@ -17,8 +17,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    // Android emulator reaches host machine at 10.0.2.2
-    private const val BASE_URL = "http://10.0.2.2:8000/api/"
+    private const val BASE_URL = "https://api.duit.viasco.my.id/api/"
 
     @Provides
     @Singleton
