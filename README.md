@@ -4,20 +4,72 @@
 
 Ekosistem pencatatan keuangan personal yang cepat, terpusat, dan bisa di-self-host. Input dari Android, analisis di dashboard web.
 
+![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white)
+![Astro](https://img.shields.io/badge/Astro-7-FF5D01?logo=astro&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?logo=kotlin&logoColor=white)
+![Jetpack Compose](https://img.shields.io/badge/Jetpack_Compose-BOM_2024.12-4285F4?logo=jetpackcompose&logoColor=white)
+![Material 3](https://img.shields.io/badge/Material_3-Expressive-7C4DFF?logo=materialdesign&logoColor=white)
+![Hilt](https://img.shields.io/badge/Hilt-DI-2496ED?logo=dagger&logoColor=white)
+![Sanctum](https://img.shields.io/badge/Sanctum-Token-FF2D20?logo=laravel&logoColor=white)
+![PHPUnit](https://img.shields.io/badge/PHPUnit-19/19-brightgreen?logo=phpunit&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
+
 ## Deskripsi Singkat
 
 Duit adalah aplikasi keuangan personal tiga komponen (backend API + dashboard web + app Android) yang dirancang untuk berjalan di shared hosting biasa. Catat transaksi dalam hitungan detik dari HP, lalu lihat ringkasan, grafik, dan riwayat di dashboard web. Tanpa LLM, tanpa Redis, tanpa queue worker — semua sinkron dan sederhana.
 
 ## Tech Stack
 
-| Komponen | Teknologi | Versi |
-|----------|-----------|-------|
-| **Backend** | Laravel + PHP + MySQL | Laravel 12, PHP 8.2, MySQL 8 |
-| **Dashboard Web** | Astro + Tailwind CSS | Astro 7, Tailwind 4 |
-| **App Android** | Kotlin + Jetpack Compose | Kotlin 2.0, Compose BOM 2024.12, Material 3 Expressive |
-| **Auth** | Laravel Sanctum (token-based) | — |
-| **DI (Android)** | Hilt | — |
-| **Testing** | PHPUnit (backend), JUnit4 + Mockito (Android) | — |
+### Backend — Laravel REST API
+
+REST API sebagai single source of truth. Berjalan di shared hosting tanpa queue worker atau Redis — semua request diproses synchronously.
+
+| Teknologi | Versi | Peran |
+|-----------|-------|-------|
+| Laravel | 12 | Framework utama, routing, Eloquent ORM, middleware |
+| PHP | 8.2 | Runtime |
+| MySQL | 8 | Database relasional (MariaDB 10.4+ kompatibel) |
+| Laravel Sanctum | — | Autentikasi token-based (bearer token per device) |
+| PHPUnit | — | Feature testing (19 test cases) |
+
+**Pattern:** Resource API (JSON:Resource transform), route-model-binding, policy-based authorization, form request validation.
+
+### Dashboard Web — Astro SSR
+
+Dashboard read-only dengan server-side rendering. Setiap page fetch data dari Laravel API di server-side, render HTML, kirim ke client. Tidak ada client-side JS framework — hanya vanilla interactivity.
+
+| Teknologi | Versi | Peran |
+|-----------|-------|-------|
+| Astro | 7 | SSR framework, .astro components, API routes |
+| Tailwind CSS | 4 | Styling utility-first |
+| TypeScript | 5 | Type safety di API routes & components |
+| Node.js | 22.12+ | Runtime SSR |
+
+**Pattern:** Middleware auth (cookie-based session), server-side fetch ke Laravel API, Chart.js untuk grafik (lazy-loaded), export CSV via API proxy.
+
+### App Android — Kotlin + Jetpack Compose
+
+Native Android app sebagai input utama. Arsitektur clean (data → domain → ui) dengan unidirectional data flow.
+
+| Teknologi | Versi | Peran |
+|-----------|-------|-------|
+| Kotlin | 2.0 | Bahasa utama |
+| Jetpack Compose | BOM 2024.12 | Declarative UI toolkit |
+| Material 3 Expressive | — | Design system (ExpressiveShapes, bold headlines) |
+| Hilt | — | Dependency injection |
+| Retrofit | 2 | HTTP client ke Laravel API |
+| OkHttp | 4 | HTTP interceptor (AuthInterceptor, logging) |
+| Kotlin Coroutines | — | Async operations |
+| Navigation Compose | — | Bottom nav + nested NavHost |
+| EncryptedSharedPreferences | — | Token storage (AES256-GCM, via Jetpack Security) |
+| JUnit4 + Mockito | — | Unit testing |
+
+**Pattern:** MVVM + Repository, `Result<T>` error handling, `StateFlow` untuk UI state, sealed class untuk state modeling.
+
+**Min SDK 31 (Android 12), Target SDK 35.**
 
 ## Alur dan Perencanaan
 
