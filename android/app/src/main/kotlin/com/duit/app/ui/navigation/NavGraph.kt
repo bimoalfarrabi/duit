@@ -1,5 +1,10 @@
 package com.duit.app.ui.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -42,6 +47,12 @@ private fun routeTitle(route: String?): String = when (route) {
     "categories" -> "Kategori"
     else -> "Duit"
 }
+
+// ponytail: index -1 = non-tab route (Add, Categories) — skip slide animation for these
+private fun tabIndex(route: String?): Int =
+    bottomNavItems.indexOfFirst { it.route == route }
+
+private const val ANIM_DURATION = 300
 
 @Composable
 fun NavGraph(tokenStorage: TokenStorage = hiltViewModel<NavViewModel>().tokenStorage) {
@@ -126,15 +137,78 @@ fun MainScreen(onLogout: () -> Unit) {
         NavHost(
             navController = navController,
             startDestination = Screen.Home.route,
-            modifier = Modifier.padding(padding)
+            modifier = Modifier.padding(padding),
+            // Default: no animation — individual composables override for tab slides
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None }
         ) {
-            composable(Screen.Home.route) { HomeScreen() }
-            composable(Screen.Add.route) {
+            composable(
+                route = Screen.Home.route,
+                enterTransition = {
+                    val from = tabIndex(initialState.destination.route)
+                    val to = tabIndex(targetState.destination.route)
+                    if (from < 0 || to < 0) EnterTransition.None
+                    else slideInHorizontally(tween(ANIM_DURATION)) { if (to > from) it else -it }
+                },
+                exitTransition = {
+                    val from = tabIndex(initialState.destination.route)
+                    val to = tabIndex(targetState.destination.route)
+                    if (from < 0 || to < 0) ExitTransition.None
+                    else slideOutHorizontally(tween(ANIM_DURATION)) { if (to > from) -it else it }
+                }
+            ) { HomeScreen() }
+
+            composable(
+                route = Screen.Add.route,
+                enterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { it } },
+                exitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } },
+                popEnterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { -it } },
+                popExitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } }
+            ) {
                 AddTransactionScreen(onBack = { navController.popBackStack() })
             }
-            composable(Screen.History.route) { TransactionListScreen() }
-            composable(Screen.Wallet.route) { WalletScreen() }
-            composable("categories") { CategoryScreen() }
+
+            composable(
+                route = Screen.History.route,
+                enterTransition = {
+                    val from = tabIndex(initialState.destination.route)
+                    val to = tabIndex(targetState.destination.route)
+                    if (from < 0 || to < 0) EnterTransition.None
+                    else slideInHorizontally(tween(ANIM_DURATION)) { if (to > from) it else -it }
+                },
+                exitTransition = {
+                    val from = tabIndex(initialState.destination.route)
+                    val to = tabIndex(targetState.destination.route)
+                    if (from < 0 || to < 0) ExitTransition.None
+                    else slideOutHorizontally(tween(ANIM_DURATION)) { if (to > from) -it else it }
+                }
+            ) { TransactionListScreen() }
+
+            composable(
+                route = Screen.Wallet.route,
+                enterTransition = {
+                    val from = tabIndex(initialState.destination.route)
+                    val to = tabIndex(targetState.destination.route)
+                    if (from < 0 || to < 0) EnterTransition.None
+                    else slideInHorizontally(tween(ANIM_DURATION)) { if (to > from) it else -it }
+                },
+                exitTransition = {
+                    val from = tabIndex(initialState.destination.route)
+                    val to = tabIndex(targetState.destination.route)
+                    if (from < 0 || to < 0) ExitTransition.None
+                    else slideOutHorizontally(tween(ANIM_DURATION)) { if (to > from) -it else it }
+                }
+            ) { WalletScreen() }
+
+            composable(
+                route = "categories",
+                enterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { it } },
+                exitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } },
+                popEnterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { -it } },
+                popExitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } }
+            ) { CategoryScreen() }
         }
     }
 }
