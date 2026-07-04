@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Models\Wallet;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TransactionController extends Controller
 {
@@ -38,9 +39,10 @@ class TransactionController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $userId = $request->user()->id;
         $data = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'wallet_id'   => 'required|exists:wallets,id',
+            'category_id' => ['required', Rule::exists('categories', 'id')->where('user_id', $userId)],
+            'wallet_id'   => ['required', Rule::exists('wallets', 'id')->where('user_id', $userId)],
             'title'       => 'required|string|max:255',
             'amount'      => 'required|numeric|min:0',
             'type'        => 'required|in:income,expense',
@@ -69,9 +71,10 @@ class TransactionController extends Controller
             return $this->error('Forbidden', 403);
         }
 
+        $userId = $request->user()->id;
         $data = $request->validate([
-            'category_id' => 'sometimes|exists:categories,id',
-            'wallet_id'   => 'sometimes|exists:wallets,id',
+            'category_id' => ['sometimes', Rule::exists('categories', 'id')->where('user_id', $userId)],
+            'wallet_id'   => ['sometimes', Rule::exists('wallets', 'id')->where('user_id', $userId)],
             'title'       => 'sometimes|string|max:255',
             'amount'      => 'sometimes|numeric|min:0',
             'type'        => 'sometimes|in:income,expense',
