@@ -24,8 +24,6 @@ import com.duit.app.ui.home.HomeScreen
 import com.duit.app.ui.transaction.AddTransactionScreen
 import com.duit.app.ui.transaction.TransactionListScreen
 import com.duit.app.ui.wallet.WalletScreen
-import javax.inject.Inject
-
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
     object Home : Screen("home", "Beranda", Icons.Default.Home)
     object Add : Screen("add_transaction", "Tambah", Icons.Default.Add)
@@ -69,7 +67,7 @@ fun MainScreen(onLogout: () -> Unit) {
 
     Scaffold(
         floatingActionButton = {
-            if (showBottomBar) {
+            if (currentDestination?.route == Screen.Home.route) {
                 FloatingActionButton(onClick = {
                     navController.navigate(Screen.Add.route) {
                         launchSingleTop = true
