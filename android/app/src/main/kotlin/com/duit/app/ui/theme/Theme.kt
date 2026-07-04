@@ -3,12 +3,23 @@ package com.duit.app.ui.theme
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.shape.RoundedCornerShape
+
+private val ExpressiveShapes = Shapes(
+    extraSmall = RoundedCornerShape(8.dp),
+    small = RoundedCornerShape(12.dp),
+    medium = RoundedCornerShape(16.dp),   // buttons
+    large = RoundedCornerShape(20.dp),    // cards
+    extraLarge = RoundedCornerShape(28.dp)
+)
 
 private val LightColorScheme = lightColorScheme(
     primary = Primary,
@@ -43,6 +54,7 @@ fun DuitTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = DuitTypography,
+        shapes = ExpressiveShapes,
         content = content
     )
 }
