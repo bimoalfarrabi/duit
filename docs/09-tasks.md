@@ -9,72 +9,72 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 ## 1. Laravel API (`backend/`)
 
 ### Setup
-- [ ] `composer create-project laravel/laravel backend`
-- [ ] Konfigurasi `.env`: `DB_*`, `APP_URL`
-- [ ] Install Sanctum: `composer require laravel/sanctum`
-- [ ] Publish Sanctum config
-- [ ] Tambah `HasApiTokens` ke model `User`
+- [x] `composer create-project laravel/laravel backend`
+- [x] Konfigurasi `.env`: `DB_*`, `APP_URL`
+- [x] Install Sanctum: `composer require laravel/sanctum`
+- [x] Publish Sanctum config
+- [x] Tambah `HasApiTokens` ke model `User`
 
 ### Database & Models
-- [ ] Migration: `categories`
-- [ ] Migration: `wallets`
-- [ ] Migration: `transactions` (dengan `wallet_id`)
-- [ ] Model `User` — tambah relasi `HasMany(Wallet)`, `HasMany(Category)`, `HasMany(Transaction)`
-- [ ] Model `Category`
-- [ ] Model `Wallet` — `User::created` event auto-create cash wallet
-- [ ] Model `Transaction`
-- [ ] Tambah index: `transactions(user_id, date)`, `transactions(wallet_id)`, `transactions(category_id)`
+- [x] Migration: `categories`
+- [x] Migration: `wallets`
+- [x] Migration: `transactions` (dengan `wallet_id`)
+- [x] Model `User` — tambah relasi `HasMany(Wallet)`, `HasMany(Category)`, `HasMany(Transaction)`
+- [x] Model `Category`
+- [x] Model `Wallet` — `User::created` event auto-create cash wallet
+- [x] Model `Transaction`
+- [x] Tambah index: `transactions(user_id, date)`, `transactions(wallet_id)`, `transactions(category_id)`
 
 ### Auth Endpoints
-- [ ] `POST /api/auth/register`
-- [ ] `POST /api/auth/login`
-- [ ] `POST /api/auth/logout`
-- [ ] `GET /api/auth/me`
+- [x] `POST /api/auth/register`
+- [x] `POST /api/auth/login`
+- [x] `POST /api/auth/logout`
+- [x] `GET /api/auth/me`
 
 ### Wallet Endpoints
-- [ ] `GET /api/wallets`
-- [ ] `POST /api/wallets` — validasi cash singleton
-- [ ] `PUT /api/wallets/{id}`
-- [ ] `DELETE /api/wallets/{id}`
+- [x] `GET /api/wallets`
+- [x] `POST /api/wallets` — validasi cash singleton
+- [x] `PUT /api/wallets/{id}`
+- [x] `DELETE /api/wallets/{id}`
 
 ### Category Endpoints
-- [ ] `GET /api/categories`
-- [ ] `POST /api/categories`
-- [ ] `PUT /api/categories/{id}`
-- [ ] `DELETE /api/categories/{id}`
+- [x] `GET /api/categories`
+- [x] `POST /api/categories`
+- [x] `PUT /api/categories/{id}`
+- [x] `DELETE /api/categories/{id}`
 
 ### Transaction Endpoints
-- [ ] `GET /api/transactions` — filter: month, year, type, category_id, wallet_id
-- [ ] `POST /api/transactions` — validasi wallet_id + category_id wajib
-- [ ] `PUT /api/transactions/{id}`
-- [ ] `DELETE /api/transactions/{id}`
+- [x] `GET /api/transactions` — filter: month, year, type, category_id, wallet_id
+- [x] `POST /api/transactions` — validasi wallet_id + category_id wajib
+- [x] `PUT /api/transactions/{id}`
+- [x] `DELETE /api/transactions/{id}`
 
 ### Statistics Endpoints
-- [ ] `GET /api/statistics/summary`
-- [ ] `GET /api/statistics/by-category`
-- [ ] `GET /api/statistics/by-wallet`
-- [ ] `GET /api/statistics/monthly`
+- [x] `GET /api/statistics/summary`
+- [x] `GET /api/statistics/by-category`
+- [x] `GET /api/statistics/by-wallet`
+- [x] `GET /api/statistics/monthly`
 
 ### Export
-- [ ] `GET /api/export/transactions` → CSV download
+- [x] `GET /api/export/transactions` → CSV download
 
 ### API Resources
-- [ ] `UserResource`
-- [ ] `CategoryResource`
-- [ ] `WalletResource`
-- [ ] `TransactionResource`
+- [x] `UserResource`
+- [x] `CategoryResource`
+- [x] `WalletResource`
+- [x] `TransactionResource`
 
 ### CORS & Hosting
-- [ ] `SANCTUM_STATEFUL_DOMAINS` di `.env`
-- [ ] `config/cors.php` — allow Astro domain
-- [ ] `.htaccess` — forward `Authorization` header
+- [x] `SANCTUM_STATEFUL_DOMAINS` di `.env`
+- [x] `config/cors.php` — allow Astro domain
+- [-] `.htaccess` — forward `Authorization` header (sudah ada di Laravel default)
 
 ### Testing
-- [ ] Feature test: register + login
-- [ ] Feature test: CRUD transaksi (ownership check)
-- [ ] Feature test: statistics/summary
-- [ ] Feature test: cash wallet singleton validation
-- [ ] `php artisan test` → hijau
+- [x] Feature test: register + login
+- [x] Feature test: CRUD transaksi (ownership check)
+- [x] Feature test: statistics/summary
+- [x] Feature test: cash wallet singleton validation
+- [x] `php artisan test` → hijau (19/19 passed)
 
 ---
 
