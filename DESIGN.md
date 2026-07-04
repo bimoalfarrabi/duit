@@ -1,7 +1,15 @@
-# DESIGN.md — Personal Finance Ecosystem
+# DESIGN.md — Duit
 
 Design system untuk Android (Jetpack Compose) dan Astro web dashboard.
 Semua keputusan visual mengacu ke dokumen ini. Jika ada konflik antara DESIGN.md dan implementasi, DESIGN.md yang benar.
+
+---
+
+## Brand
+
+**Nama:** Duit
+**Tagline:** "Duitmu, di tanganmu."
+**Karakter:** Casual tapi serius — kata sehari-hari yang semua orang Indonesia paham, dipasangkan dengan desain yang rapi dan terpercaya.
 
 ---
 

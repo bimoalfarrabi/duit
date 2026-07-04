@@ -1,4 +1,4 @@
-# AGENTS.md — Personal Finance Ecosystem
+# AGENTS.md — Duit
 
 Panduan untuk AI agent saat bekerja di repo ini.
 

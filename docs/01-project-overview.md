@@ -1,4 +1,6 @@
-# 📖 Personal Finance Ecosystem — Project Overview
+# 📖 Duit — Project Overview
+
+> **Tagline:** "Duitmu, di tanganmu."
 
 ## Visi
 
