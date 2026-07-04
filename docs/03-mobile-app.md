@@ -12,7 +12,7 @@
 ## Setup Project
 
 - Min SDK: 31 (Android 12)
-- Target SDK: 34
+- Target SDK: 35 (Android 16)
 - Android Studio Hedgehog+
 
 ### Dependencies (`build.gradle.kts`)
@@ -40,7 +40,7 @@ implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
 ## Navigation
 
-Bottom nav bar — 4 tab: **Home / Add / History / Wallet**
+Bottom nav bar — 3 tab: **Home / History / Wallet** + FAB untuk tambah transaksi
 
 - `AuthGraph`: `LoginScreen`
 - `MainGraph`: `HomeScreen`, `AddTransactionScreen`, `TransactionListScreen`, `CategoryScreen`, `WalletScreen`
@@ -56,7 +56,7 @@ Bottom nav bar — 4 tab: **Home / Add / History / Wallet**
 ### HomeScreen
 - 3 summary card: Pemasukan / Pengeluaran / Saldo bulan ini
 - 5 transaksi terbaru
-- Pull-to-refresh
+- Refresh via IconButton di TopAppBar
 
 ### AddTransactionScreen
 - Fields: judul, nominal (numeric), tipe (income/expense), kategori (dropdown), wallet (dropdown), tanggal (DatePicker)

@@ -63,8 +63,8 @@ https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap
 | Role | Size | Weight | Line Height | Penggunaan |
 |------|------|--------|-------------|------------|
 | Display | 32px / sp32 | 700 | 1.2 | Nominal besar di HomeScreen |
-| Heading 1 | 24px / sp24 | 600 | 1.3 | Judul halaman |
-| Heading 2 | 20px / sp20 | 600 | 1.4 | Section header |
+| Heading 1 | 24px / sp24 | 700 | 1.3 | Judul halaman |
+| Heading 2 | 20px / sp20 | 700 | 1.4 | Section header |
 | Heading 3 | 16px / sp16 | 600 | 1.5 | Card title, label field |
 | Body | 14px / sp14 | 400 | 1.6 | Deskripsi transaksi, body text |
 | Caption | 12px / sp12 | 400 | 1.5 | Tanggal, metadata, helper text |
@@ -111,9 +111,13 @@ Berbasis kelipatan 4dp/px.
 | Token | Value | Penggunaan |
 |-------|-------|------------|
 | `radius-sm` | 6px/dp | Badge, chip, tag |
-| `radius-md` | 10px/dp | Card, input field |
-| `radius-lg` | 16px/dp | Bottom sheet, large card |
+| `radius-md` | 12px/dp | Input field |
+| `radius-lg` | 16px/dp | Button (M3 Expressive) |
+| `radius-xl` | 20px/dp | Card (M3 Expressive) |
+| `radius-2xl` | 28px/dp | Bottom sheet, large card |
 | `radius-full` | 9999px | Avatar, FAB, pill button |
+
+> **Android (M3 Expressive):** `ExpressiveShapes` di `Theme.kt` — medium=16dp (button), large=20dp (card), extraLarge=28dp.
 
 ---
 
@@ -233,9 +237,9 @@ Label selalu di atas field — bukan placeholder-only.
 
 ---
 
-## Android: Jetpack Compose + Material Design 3
+## Android: Jetpack Compose + Material Design 3 Expressive
 
-Aplikasi Android menggunakan **Material Design 3** dengan **dynamic colors (Monet)** — warna UI mengikuti wallpaper user secara otomatis (Android 12+).
+Aplikasi Android menggunakan **Material Design 3 Expressive** dengan **dynamic colors (Monet)** — warna UI mengikuti wallpaper user secara otomatis (Android 12+). M3 Expressive adalah evolusi MD3 yang lebih "human" dengan corner radius lebih besar, typography lebih bold, dan spacing lebih luas.
 
 ### Dynamic Color Setup
 
@@ -277,7 +281,8 @@ fun PersonalFinanceTheme(
     }
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = PersonalFinanceTypography,
+        typography = DuitTypography,
+        shapes = ExpressiveShapes,   // M3 Expressive: medium=16dp, large=20dp, extraLarge=28dp
         content = content
     )
 }
@@ -327,23 +332,24 @@ val ExpenseRedContainer = Color(0xFFFEE2E2)
 | Chip/badge | `AssistChip` / `FilterChip` |
 | Dialog konfirmasi | `AlertDialog` |
 
-### Typography (MD3)
+### Typography (MD3 Expressive)
 
 ```kotlin
 // ui/theme/Type.kt
-val PersonalFinanceTypography = Typography(
-    displayLarge  = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.Bold, fontSize = 32.sp),
-    headlineMedium = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.SemiBold, fontSize = 24.sp),
-    titleLarge    = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.SemiBold, fontSize = 20.sp),
-    titleMedium   = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.SemiBold, fontSize = 16.sp),
-    bodyMedium    = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.Normal, fontSize = 14.sp),
-    labelSmall    = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.Medium, fontSize = 12.sp),
+val DuitTypography = Typography(
+    displayLarge  = TextStyle(fontWeight = FontWeight.Bold, fontSize = 32.sp, lineHeight = 38.sp),
+    headlineLarge = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp, lineHeight = 31.sp),
+    headlineMedium = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp, lineHeight = 28.sp),
+    titleMedium   = TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp, lineHeight = 24.sp),
+    bodyLarge     = TextStyle(fontWeight = FontWeight.Normal, fontSize = 14.sp, lineHeight = 20.sp),
+    bodyMedium    = TextStyle(fontWeight = FontWeight.Normal, fontSize = 12.sp, lineHeight = 16.sp),
+    labelMedium   = TextStyle(fontWeight = FontWeight.Medium, fontSize = 11.sp, lineHeight = 16.sp),
 )
 ```
 
 ### Min SDK
 
-**Min SDK: 31 (Android 12)** — wajib untuk dynamic color (Monet). Target SDK: 34.
+**Min SDK: 31 (Android 12)** — wajib untuk dynamic color (Monet). Target SDK: 35 (Android 16).
 
 ---
 
