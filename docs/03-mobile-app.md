@@ -86,6 +86,21 @@ Bottom nav bar — 3 tab: **Home / History / Wallet** + FAB untuk tambah transak
 - Sukses → navigate ke MainGraph (popUpTo login inclusive)
 - Error → Snackbar
 
+### BudgetScreen
+- List budget bulan ini per kategori (amount, spent, progress bar)
+- Progress bar merah jika melebihi budget
+- FAB → bottom sheet tambah/update budget (pilih kategori expense, isi jumlah)
+- Swipe/delete → hapus budget
+- Route: `budgets`
+
+### SavingsScreen
+- List semua savings goal (nama, progress bar, current/target amount, deadline)
+- Chip "✓ Tercapai" jika `is_completed = true`
+- FAB → bottom sheet buat goal baru (nama, target, deadline opsional)
+- Tombol "Topup" → bottom sheet tambah nominal ke `current_amount`
+- Auto-complete di backend jika `current_amount >= target_amount`
+- Route: `savings`
+
 ## API Interface (`data/remote/ApiService.kt`)
 
 ```kotlin

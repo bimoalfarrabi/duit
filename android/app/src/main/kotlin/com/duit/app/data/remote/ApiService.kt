@@ -55,4 +55,27 @@ interface ApiService {
 
     @GET("transactions/export")
     suspend fun exportCsv(@QueryMap params: Map<String, String>): ResponseBody
+
+    // Budget
+    @GET("budgets")
+    suspend fun getBudgets(@QueryMap params: Map<String, String>): ApiResponse<List<BudgetResponse>>
+
+    @POST("budgets")
+    suspend fun saveBudget(@Body body: CreateBudgetRequest): ApiResponse<BudgetResponse>
+
+    @DELETE("budgets/{id}")
+    suspend fun deleteBudget(@Path("id") id: Int): ApiResponse<Unit>
+
+    // Savings Goals
+    @GET("savings")
+    suspend fun getSavingsGoals(): ApiResponse<List<SavingsGoalResponse>>
+
+    @POST("savings")
+    suspend fun createSavingsGoal(@Body body: CreateSavingsGoalRequest): ApiResponse<SavingsGoalResponse>
+
+    @PUT("savings/{id}")
+    suspend fun updateSavingsGoal(@Path("id") id: Int, @Body body: UpdateSavingsGoalRequest): ApiResponse<SavingsGoalResponse>
+
+    @DELETE("savings/{id}")
+    suspend fun deleteSavingsGoal(@Path("id") id: Int): ApiResponse<Unit>
 }

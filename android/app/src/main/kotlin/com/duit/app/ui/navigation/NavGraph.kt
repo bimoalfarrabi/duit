@@ -26,8 +26,10 @@ import androidx.navigation.compose.rememberNavController
 import com.duit.app.data.local.TokenStorage
 import com.duit.app.ui.auth.LoginScreen
 import com.duit.app.ui.auth.TotpScreen
+import com.duit.app.ui.budget.BudgetScreen
 import com.duit.app.ui.category.CategoryScreen
 import com.duit.app.ui.home.HomeScreen
+import com.duit.app.ui.savings.SavingsScreen
 import com.duit.app.ui.transaction.AddTransactionScreen
 import com.duit.app.ui.transaction.TransactionListScreen
 import com.duit.app.ui.wallet.WalletScreen
@@ -37,6 +39,8 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
     object Add : Screen("add_transaction", "Tambah", Icons.Default.Add)
     object History : Screen("transactions", "Riwayat", Icons.Default.List)
     object Wallet : Screen("wallets", "Dompet", Icons.Default.AccountBox)
+    object Budget : Screen("budgets", "Budget", Icons.Default.List)
+    object Savings : Screen("savings", "Tabungan", Icons.Default.Person)
 }
 
 val bottomNavItems = listOf(Screen.Home, Screen.History, Screen.Wallet)
@@ -45,6 +49,8 @@ private fun routeTitle(route: String?): String = when (route) {
     Screen.Home.route -> "Duit"
     Screen.History.route -> "Riwayat"
     Screen.Wallet.route -> "Dompet"
+    Screen.Budget.route -> "Budget"
+    Screen.Savings.route -> "Tabungan"
     "categories" -> "Kategori"
     else -> "Duit"
 }
@@ -227,6 +233,22 @@ fun MainScreen(onLogout: () -> Unit) {
                 popEnterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { -it } },
                 popExitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } }
             ) { CategoryScreen() }
+
+            composable(
+                route = Screen.Budget.route,
+                enterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { it } },
+                exitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } },
+                popEnterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { -it } },
+                popExitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } }
+            ) { BudgetScreen() }
+
+            composable(
+                route = Screen.Savings.route,
+                enterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { it } },
+                exitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } },
+                popEnterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { -it } },
+                popExitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } }
+            ) { SavingsScreen() }
         }
     }
 }
