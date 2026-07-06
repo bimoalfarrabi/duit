@@ -143,6 +143,40 @@ $wallet->increment('balance', $delta);
 
 ---
 
+### budgets
+
+| Kolom | Tipe | Keterangan |
+|-------|------|-----------|
+| id | BIGINT UNSIGNED PK | |
+| user_id | BIGINT UNSIGNED FK | → users.id |
+| category_id | BIGINT UNSIGNED FK | → categories.id |
+| month | TINYINT UNSIGNED | 1–12 |
+| year | SMALLINT UNSIGNED | |
+| amount | DECIMAL(15,2) | Budget yang ditetapkan |
+| created_at | TIMESTAMP | |
+| updated_at | TIMESTAMP | |
+
+**Unique:** `(user_id, category_id, month, year)` — satu budget per kategori per bulan.
+`spent` tidak disimpan di DB — dihitung live dari `transactions` saat GET.
+
+---
+
+### savings_goals
+
+| Kolom | Tipe | Keterangan |
+|-------|------|-----------|
+| id | BIGINT UNSIGNED PK | |
+| user_id | BIGINT UNSIGNED FK | → users.id |
+| name | VARCHAR(255) | Nama target tabungan |
+| target_amount | DECIMAL(15,2) | Nominal target |
+| current_amount | DECIMAL(15,2) DEFAULT 0 | Nominal terkumpul (update manual) |
+| deadline | DATE NULL | Tenggat waktu (opsional) |
+| is_completed | BOOLEAN DEFAULT false | Auto-true jika current >= target |
+| created_at | TIMESTAMP | |
+| updated_at | TIMESTAMP | |
+
+---
+
 ## Default Categories (Seed saat Register)
 
 Dibuat otomatis via `UserObserver` atau `RegisterController` bersamaan dengan cash wallet.

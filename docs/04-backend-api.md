@@ -185,6 +185,69 @@ Ownership violation → HTTP 403
 
 ---
 
+### Budget
+
+| Method | Endpoint | Auth | Deskripsi |
+|--------|----------|------|-----------|
+| GET | `/api/budgets` | ✅ | List budget bulan ini + spent per kategori |
+| POST | `/api/budgets` | ✅ | Buat atau update budget (upsert by category+month+year) |
+| DELETE | `/api/budgets/{id}` | ✅ | Hapus budget |
+
+**Params GET:** `?month=7&year=2026` (default: bulan & tahun sekarang)
+
+**Response GET:**
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "category_id": 3,
+      "category": { "id": 3, "name": "Makan", ... },
+      "month": 7,
+      "year": 2026,
+      "amount": "500000.00",
+      "spent": 125000
+    }
+  ]
+}
+```
+
+**Business rules:**
+- Satu budget per `(user, category, month, year)` — `POST` upsert, tidak ada `PUT`
+- `spent` dihitung live dari `transactions` (tidak disimpan di DB)
+- Ownership check: `category_id` harus milik user yang sama
+
+---
+
+### Savings Goals
+
+| Method | Endpoint | Auth | Deskripsi |
+|--------|----------|------|-----------|
+| GET | `/api/savings` | ✅ | List semua savings goal milik user |
+| POST | `/api/savings` | ✅ | Buat savings goal baru |
+| PUT | `/api/savings/{id}` | ✅ | Update goal (nama, topup `current_amount`, deadline) |
+| DELETE | `/api/savings/{id}` | ✅ | Hapus savings goal |
+
+**Response:**
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "Laptop baru",
+    "target_amount": "10000000.00",
+    "current_amount": "3000000.00",
+    "deadline": "2026-12-31",
+    "is_completed": false
+  }
+}
+```
+
+**Business rules:**
+- `current_amount` diupdate manual via `PUT` (topup)
+- Auto-complete: `is_completed = true` jika `current_amount >= target_amount`
+
+---
+
 ### Export
 
 | Method | Endpoint | Auth | Deskripsi |

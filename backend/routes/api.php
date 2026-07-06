@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BudgetController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\PasswordResetController;
+use App\Http\Controllers\Api\SavingsGoalController;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\TwoFactorController;
@@ -41,6 +43,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('wallets', WalletController::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('transactions', TransactionController::class);
+
+    // Budget — upsert via POST, tidak ada PUT
+    Route::get('budgets', [BudgetController::class, 'index']);
+    Route::post('budgets', [BudgetController::class, 'store']);
+    Route::delete('budgets/{budget}', [BudgetController::class, 'destroy']);
+
+    // Savings goals
+    Route::apiResource('savings', SavingsGoalController::class)->except(['show']);
 
     Route::prefix('statistics')->group(function () {
         Route::get('summary', [StatisticsController::class, 'summary']);

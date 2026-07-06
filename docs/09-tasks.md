@@ -210,3 +210,45 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 
 ### Dependencies
 - [x] `pragmarx/google2fa-laravel` ^3.0 terinstall
+
+---
+
+## Rencana v2 — Budget & Savings
+
+### Budget Bulanan
+
+- [x] Migration: `budgets` (`user_id`, `category_id`, `month`, `year`, `amount`)
+- [x] Model `Budget` — cast `amount` decimal:2
+- [x] Relasi `User::budgets()`
+- [x] `GET /api/budgets` — filter bulan/tahun, include `spent` live dari transactions
+- [x] `POST /api/budgets` — upsert by `(category_id, month, year)`
+- [x] `DELETE /api/budgets/{id}` — ownership check
+- [x] `BudgetResource` — include `spent`
+- [x] Feature test: `BudgetTest` (7 test cases)
+
+### Target Tabungan
+
+- [x] Migration: `savings_goals` (`user_id`, `name`, `target_amount`, `current_amount`, `deadline`, `is_completed`)
+- [x] Model `SavingsGoal` — cast boolean + decimal
+- [x] Relasi `User::savingsGoals()`
+- [x] `GET /api/savings` — list semua savings goal
+- [x] `POST /api/savings` — buat goal baru
+- [x] `PUT /api/savings/{id}` — topup `current_amount`, auto-complete jika >= target
+- [x] `DELETE /api/savings/{id}` — ownership check
+- [x] `SavingsGoalResource`
+- [x] Feature test: `SavingsGoalTest` (6 test cases)
+
+### QA Backend v2 Budget & Savings
+
+- [x] `phpunit --filter="BudgetTest|SavingsGoalTest"` → 13/13 passed
+- [x] Full suite → 49/49 passed (1 skip)
+- [ ] Deploy ke production + run migration
+- [ ] Update docs v2 selesai
+
+### Android v2 Budget & Savings
+
+- [ ] `BudgetRepository.kt` + `BudgetDto`
+- [ ] `SavingsRepository.kt` + `SavingsDto`
+- [ ] `BudgetScreen` + `BudgetViewModel`
+- [ ] `SavingsScreen` + `SavingsViewModel`
+- [ ] Navigasi ke BudgetScreen + SavingsScreen dari bottom nav / home
