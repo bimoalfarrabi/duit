@@ -161,19 +161,17 @@ Fitur ini ada di roadmap tapi **belum waktunya** — tolak jika diminta sebelum 
 
 ---
 
-## Progress v2 (In Progress)
+## Progress v2 ✅ Done
 
 ### Selesai
 - ✅ Password reset via email (`PasswordResetController`)
 - ✅ Email verification (`EmailVerificationController`)
 - ✅ Two-factor authentication TOTP (`TwoFactorController`)
 - ✅ Android: `TotpScreen` + `TotpViewModel` untuk 2FA login flow
-
-### Belum Dikerjakan
-- [ ] Budget bulanan per kategori (backend + Android)
-- [ ] Target tabungan dengan progress tracker (backend + Android)
-- [ ] Notifikasi: budget hampir habis, target tercapai
-- [ ] Local cache Android (offline-first) + Room database
+- ✅ Budget bulanan per kategori (backend + Android)
+- ✅ Target tabungan dengan progress tracker (backend + Android)
+- ✅ Notifikasi lokal: budget hampir habis, target tercapai (WorkManager)
+- ✅ Local cache Android (offline-first) + Room database
 
 ---
 
