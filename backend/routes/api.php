@@ -17,7 +17,7 @@ Route::prefix('auth')->group(function () {
 
     // Password reset (public)
     Route::post('forgot-password', [PasswordResetController::class, 'forgotPassword'])->middleware('throttle:5,1');
-    Route::post('reset-password', [PasswordResetController::class, 'resetPassword'])->middleware('throttle:5,1');
+    Route::post('reset-password', [PasswordResetController::class, 'resetPassword'])->middleware('throttle:5,1')->name('password.reset');
 
     // 2FA challenge — pakai temp_token, tidak butuh sanctum middleware penuh
     Route::post('two-factor-challenge', [TwoFactorController::class, 'challenge'])->middleware('throttle:10,1');
