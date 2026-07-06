@@ -12,8 +12,7 @@ class ExampleTest extends TestCase
      */
     public function test_the_application_returns_a_successful_response(): void
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+        // ponytail: pure API app, tidak ada route GET / — skip test bawaan Laravel
+        $this->markTestSkipped('Pure API app, no web routes.');
     }
 }

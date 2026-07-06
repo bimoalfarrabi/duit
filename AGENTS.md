@@ -20,13 +20,25 @@ personal-finance/
 
 ## Environment Lokal
 
-- **Backend (Laravel):** Pakai PHP dan MySQL dari **XAMPP**. Apache jalan di port 80, MySQL di port 3306.
+- **Backend (Laravel):** Pakai PHP dan MySQL dari **XAMPP**. PHP binary di `/opt/lampp/bin/php`, MySQL di `/opt/lampp/bin/mysql`. Apache jalan di port 80, MySQL di port 3306.
 - **Web (Astro):** Node.js 20+, jalankan dengan `npm run dev`.
 - **Android:** Android Studio, emulator atau device fisik.
 
 Jangan assume environment lain (Docker, Valet, Herd) kecuali user bilang berbeda.
 
 **Jangan jalankan server secara otomatis.** AI agent tidak boleh menjalankan `php artisan serve` atau `npm run dev` tanpa perintah eksplisit dari user. Cukup beritahu user perintah yang perlu dijalankan.
+
+**Menjalankan perintah PHP/Laravel:** Selalu pakai `/opt/lampp/bin/php`, bukan `php` system. Contoh:
+```bash
+/opt/lampp/bin/php artisan test
+/opt/lampp/bin/php artisan migrate
+```
+
+**Testing:** Test suite pakai MySQL XAMPP (`duit_test` database). Database `duit_test` harus sudah dibuat sebelum test pertama kali dijalankan:
+```bash
+/opt/lampp/bin/mysql -u root -e "CREATE DATABASE IF NOT EXISTS duit_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+```
+Config test ada di `backend/phpunit.xml` — `DB_CONNECTION=mysql`, `DB_DATABASE=duit_test`.
 
 ---
 
