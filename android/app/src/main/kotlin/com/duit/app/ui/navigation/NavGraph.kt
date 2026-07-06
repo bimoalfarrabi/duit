@@ -25,6 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.duit.app.data.local.TokenStorage
 import com.duit.app.ui.auth.LoginScreen
+import com.duit.app.ui.auth.TotpScreen
 import com.duit.app.ui.category.CategoryScreen
 import com.duit.app.ui.home.HomeScreen
 import com.duit.app.ui.transaction.AddTransactionScreen
@@ -61,11 +62,28 @@ fun NavGraph(tokenStorage: TokenStorage = hiltViewModel<NavViewModel>().tokenSto
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable("login") {
-            LoginScreen(onLoginSuccess = {
-                navController.navigate("main") {
-                    popUpTo("login") { inclusive = true }
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate("main") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                onRequires2FA = { tempToken ->
+                    navController.navigate("totp/$tempToken")
                 }
-            })
+            )
+        }
+        composable("totp/{tempToken}") { backStackEntry ->
+            val tempToken = backStackEntry.arguments?.getString("tempToken") ?: ""
+            TotpScreen(
+                tempToken = tempToken,
+                onSuccess = {
+                    navController.navigate("main") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                onBack = { navController.popBackStack() }
+            )
         }
         composable("main") {
             MainScreen(onLogout = {

@@ -17,6 +17,9 @@ interface ApiService {
     @POST("auth/logout")
     suspend fun logout(): ApiResponse<Unit>
 
+    @POST("auth/two-factor-challenge")
+    suspend fun twoFactorChallenge(@Body body: TwoFactorChallengeRequest): ApiResponse<TwoFactorChallengeResponse>
+
     @GET("wallets")
     suspend fun getWallets(): ApiResponse<List<WalletResponse>>
 

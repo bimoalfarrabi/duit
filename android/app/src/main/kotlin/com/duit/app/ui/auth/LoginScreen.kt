@@ -15,6 +15,7 @@ import com.duit.app.ui.theme.Primary
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
+    onRequires2FA: (String) -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -24,6 +25,12 @@ fun LoginScreen(
 
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) onLoginSuccess()
+    }
+
+    LaunchedEffect(uiState.requires2fa, uiState.tempToken) {
+        if (uiState.requires2fa && uiState.tempToken != null) {
+            onRequires2FA(uiState.tempToken!!)
+        }
     }
 
     LaunchedEffect(uiState.error) {

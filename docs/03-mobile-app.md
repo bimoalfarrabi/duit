@@ -42,9 +42,10 @@ implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
 Bottom nav bar — 3 tab: **Home / History / Wallet** + FAB untuk tambah transaksi
 
-- `AuthGraph`: `LoginScreen`
+- `AuthGraph`: `LoginScreen`, `TotpScreen`
 - `MainGraph`: `HomeScreen`, `AddTransactionScreen`, `TransactionListScreen`, `CategoryScreen`, `WalletScreen`
 - Startup check: ada token → MainGraph, tidak ada → AuthGraph
+- Login dengan 2FA aktif → `TotpScreen` dengan `tempToken` sebagai route argument
 
 ## Screens
 
@@ -77,6 +78,13 @@ Bottom nav bar — 3 tab: **Home / History / Wallet** + FAB untuk tambah transak
 - FAB → bottom sheet tambah wallet (nama, tipe, warna)
   - Tipe `cash`: disable jika sudah ada (max 1)
   - Tipe `bank`/`ewallet`: bebas
+
+### TotpScreen
+- Input kode 6 digit dari Google Authenticator / TOTP app
+- Auto-submit disabled sampai 6 digit terisi
+- Tombol back → kembali ke LoginScreen
+- Sukses → navigate ke MainGraph (popUpTo login inclusive)
+- Error → Snackbar
 
 ## API Interface (`data/remote/ApiService.kt`)
 

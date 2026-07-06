@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duit.app.data.remote.toUserMessage
 import com.duit.app.data.repository.AuthRepository
+import com.duit.app.data.repository.LoginResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +14,9 @@ import javax.inject.Inject
 data class LoginUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
-    val isSuccess: Boolean = false
+    val isSuccess: Boolean = false,
+    val requires2fa: Boolean = false,
+    val tempToken: String? = null
 )
 
 @HiltViewModel
@@ -30,7 +33,15 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
         viewModelScope.launch {
             _uiState.value = LoginUiState(isLoading = true)
             authRepository.login(email, password)
-                .onSuccess { _uiState.value = LoginUiState(isSuccess = true) }
+                .onSuccess { result ->
+                    when (result) {
+                        is LoginResult.Success -> _uiState.value = LoginUiState(isSuccess = true)
+                        is LoginResult.Requires2FA -> _uiState.value = LoginUiState(
+                            requires2fa = true,
+                            tempToken = result.tempToken
+                        )
+                    }
+                }
                 .onFailure { _uiState.value = LoginUiState(error = it.toUserMessage()) }
         }
     }

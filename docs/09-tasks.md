@@ -205,7 +205,7 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 - [x] `DELETE /api/auth/two-factor-authentication` — disable 2FA (butuh TOTP code)
 - [x] `POST /api/auth/two-factor-challenge` — verifikasi TOTP code saat login (pakai temp_token)
 - [x] Login flow: jika 2FA aktif, return `temp_token` (ability: `2fa-challenge`, expire 5 menit) — token penuh tidak dikembalikan sampai TOTP diverifikasi
-- [ ] Android: screen TOTP input setelah login sukses jika 2FA aktif — dikerjakan di track Android v2
+- [x] Android: screen TOTP input setelah login sukses jika 2FA aktif — dikerjakan di track Android v2
 - [x] Feature test: enable → confirm → login challenge → disable flow (`TwoFactorTest`)
 
 ### Dependencies
