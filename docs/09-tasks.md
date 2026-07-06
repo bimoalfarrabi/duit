@@ -1,6 +1,6 @@
 # 📋 Tasks
 
-Checklist pengembangan v1 MVP. Update status saat implementasi.
+Checklist pengembangan v1 & v2. Update status saat implementasi.
 
 Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 

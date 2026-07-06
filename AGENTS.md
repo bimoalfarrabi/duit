@@ -150,17 +150,30 @@ Selalu load skill yang relevan sebelum mulai kerja:
 
 ---
 
-## Batasan v1 (Jangan Implementasi Sebelum Waktunya)
+## Batasan (Jangan Implementasi Sebelum Waktunya)
 
-Fitur ini ada di roadmap tapi **bukan v1** — tolak jika diminta sebelum v1 selesai:
+Fitur ini ada di roadmap tapi **belum waktunya** — tolak jika diminta sebelum versinya:
 
 - OCR scan struk → v3
 - Voice input → v4
-- Budget & target tabungan → v2
-- Notifikasi → v2
-- Offline mode / Room database → v2
 - Export PDF/Excel → v2+
 - Family wallet / shared budget → v5
+
+---
+
+## Progress v2 (In Progress)
+
+### Selesai
+- ✅ Password reset via email (`PasswordResetController`)
+- ✅ Email verification (`EmailVerificationController`)
+- ✅ Two-factor authentication TOTP (`TwoFactorController`)
+- ✅ Android: `TotpScreen` + `TotpViewModel` untuk 2FA login flow
+
+### Belum Dikerjakan
+- [ ] Budget bulanan per kategori (backend + Android)
+- [ ] Target tabungan dengan progress tracker (backend + Android)
+- [ ] Notifikasi: budget hampir habis, target tercapai
+- [ ] Local cache Android (offline-first) + Room database
 
 ---
 

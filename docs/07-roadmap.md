@@ -5,7 +5,7 @@
 | Versi | Fokus | Status |
 |-------|-------|--------|
 | **v1** | Input manual, Laravel API, Astro dashboard | ✅ Live |
-| **v2** | Budget & savings | ⬜ Backlog |
+| **v2** | Budget & savings | 🔄 In Progress |
 | **v3** | OCR scan struk | ⬜ Backlog |
 | **v4** | Voice input | ⬜ Backlog |
 | **v5** | Multi-user lanjutan | ⬜ Backlog |
