@@ -247,8 +247,16 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 
 ### Android v2 Budget & Savings
 
-- [ ] `BudgetRepository.kt` + `BudgetDto`
-- [ ] `SavingsRepository.kt` + `SavingsDto`
-- [ ] `BudgetScreen` + `BudgetViewModel`
-- [ ] `SavingsScreen` + `SavingsViewModel`
-- [ ] Navigasi ke BudgetScreen + SavingsScreen dari bottom nav / home
+- [x] `BudgetRepository.kt` + `BudgetDto`
+- [x] `SavingsRepository.kt` + `SavingsDto`
+- [x] `BudgetScreen` + `BudgetViewModel`
+- [x] `SavingsScreen` + `SavingsViewModel`
+- [x] Navigasi ke BudgetScreen + SavingsScreen dari bottom nav / home
+
+### Android v2 Notifikasi Lokal
+
+- [x] WorkManager (`work-runtime-ktx 2.9.0`) + Hilt Work dependency
+- [x] `NotificationHelper.kt` — channel setup + send helper
+- [x] `BudgetCheckWorker.kt` — cek budget > 80% terpakai + savings goal tercapai
+- [x] Schedule `PeriodicWorkRequest` 1x/hari di `DuitApplication`
+- [x] `AndroidManifest`: `POST_NOTIFICATIONS` + `RECEIVE_BOOT_COMPLETED` permissions
