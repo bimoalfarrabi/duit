@@ -24,9 +24,23 @@ wallets
 | id | BIGINT UNSIGNED PK | Auto-increment |
 | name | VARCHAR(255) | Nama user |
 | email | VARCHAR(255) UNIQUE | Email login |
+| email_verified_at | TIMESTAMP NULL | Null = belum verifikasi |
 | password | VARCHAR(255) | Bcrypt |
+| two_factor_secret | TEXT NULL | TOTP secret (terenkripsi di DB) |
+| two_factor_confirmed_at | TIMESTAMP NULL | Null = 2FA belum dikonfirmasi |
+| remember_token | VARCHAR(100) NULL | |
 | created_at | TIMESTAMP | |
 | updated_at | TIMESTAMP | |
+
+---
+
+### password_reset_tokens
+
+| Kolom | Tipe | Keterangan |
+|-------|------|-----------|
+| email | VARCHAR(255) PK | Email user |
+| token | VARCHAR(255) | Token reset (hashed) |
+| created_at | TIMESTAMP NULL | Expire setelah 60 menit (default Laravel) |
 
 ---
 

@@ -34,19 +34,28 @@ Ownership violation → HTTP 403
 | Method | Endpoint | Auth | Deskripsi |
 |--------|----------|------|-----------|
 | POST | `/api/auth/register` | ❌ | Daftar akun baru |
-| POST | `/api/auth/login` | ❌ | Login, return token |
+| POST | `/api/auth/login` | ❌ | Login, return token (atau temp_token jika 2FA aktif) |
 | POST | `/api/auth/logout` | ✅ | Revoke token |
 | GET | `/api/auth/me` | ✅ | Data user aktif |
+| POST | `/api/auth/forgot-password` | ❌ | Kirim link reset password ke email (throttle 5/mnt) |
+| POST | `/api/auth/reset-password` | ❌ | Reset password via token dari email |
+| POST | `/api/auth/email/verification-notification` | ✅ | Kirim ulang link verifikasi email (throttle 3/mnt) |
+| GET | `/api/auth/email/verify/{id}/{hash}` | ✅ | Verifikasi email via signed URL |
+| POST | `/api/auth/two-factor-authentication` | ✅ | Enable 2FA — return secret + QR URL |
+| POST | `/api/auth/two-factor-authentication/confirm` | ✅ | Konfirmasi TOTP code untuk aktivasi 2FA |
+| DELETE | `/api/auth/two-factor-authentication` | ✅ | Disable 2FA (butuh TOTP code) |
+| POST | `/api/auth/two-factor-challenge` | ❌ | Verifikasi TOTP saat login (pakai temp_token) |
 
-**Register request:**
+**Login response normal:**
 ```json
-{ "name": "Budi", "email": "budi@mail.com", "password": "secret123" }
+{ "data": { "token": "1|abc...", "user": { ... } }, "status": true }
 ```
 
-**Login response:**
+**Login response jika 2FA aktif:**
 ```json
-{ "data": { "token": "1|abc...", "user": { "id": 1, "name": "Budi", "email": "budi@mail.com" } }, "status": true }
+{ "data": { "requires_2fa": true, "temp_token": "2|xyz..." }, "status": true }
 ```
+`temp_token` hanya valid 5 menit dan hanya bisa dipakai untuk `/two-factor-challenge`.
 
 ---
 

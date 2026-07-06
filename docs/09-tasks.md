@@ -182,27 +182,31 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 
 ## Rencana v2 — Auth Lanjutan
 
-> Diimplementasi manual di `AuthController` tanpa Fortify — pure API, no Blade.
+> Diimplementasi manual tanpa Fortify — pure API, no Blade.
 
 ### Password Reset
-- [ ] Migration: tabel `password_reset_tokens` (email, token hashed, created_at)
-- [ ] `POST /api/auth/forgot-password` — kirim email dengan signed token (expire 1 jam)
-- [ ] `POST /api/auth/reset-password` — verifikasi token + update password
-- [ ] Konfigurasi Laravel mailer di `.env` (SMTP/Mailgun)
-- [ ] Feature test: request reset + reset sukses + token expired
+- [x] Migration: tabel `password_reset_tokens` (sudah ada di Laravel default)
+- [x] `POST /api/auth/forgot-password` — kirim email dengan signed token (expire 1 jam via `PasswordResetController`)
+- [x] `POST /api/auth/reset-password` — verifikasi token + update password + revoke semua token
+- [x] Konfigurasi Laravel mailer di `.env.example` (`MAIL_MAILER=sendmail` untuk cPanel)
+- [x] Feature test: request reset + reset sukses + token invalid + password policy + token revoke (`PasswordResetTest`)
 
 ### Email Verification
-- [ ] Tambah kolom `email_verified_at` ke tabel `users` (sudah ada di default Laravel)
-- [ ] `POST /api/auth/email/verification-notification` — kirim ulang link verifikasi
-- [ ] `GET /api/auth/email/verify/{id}/{hash}` — verifikasi via signed URL
-- [ ] Middleware `verified` untuk endpoint yang butuh email terverifikasi
-- [ ] Feature test: verifikasi sukses + link expired
+- [x] Kolom `email_verified_at` sudah ada di default Laravel — `MustVerifyEmail` diaktifkan di `User` model
+- [x] `POST /api/auth/email/verification-notification` — kirim ulang link verifikasi (`EmailVerificationController`)
+- [x] `GET /api/auth/email/verify/{id}/{hash}` — verifikasi via signed URL
+- [-] Middleware `verified` untuk endpoint — tidak diimplementasi di v2 (optional, semua user bisa akses)
+- [x] Feature test: send notification + verify sukses + hash invalid (`EmailVerificationTest`)
 
 ### Two-Factor Authentication (TOTP)
-- [ ] Migration: kolom `two_factor_secret` dan `two_factor_confirmed_at` di `users`
-- [ ] `POST /api/auth/two-factor-authentication` — enable 2FA, return QR code
-- [ ] `DELETE /api/auth/two-factor-authentication` — disable 2FA
-- [ ] `POST /api/auth/two-factor-challenge` — verifikasi TOTP code saat login
-- [ ] Login flow: jika 2FA aktif, token tidak dikembalikan sampai TOTP diverifikasi
-- [ ] Android: screen TOTP input setelah login sukses jika 2FA aktif
-- [ ] Feature test: enable → login challenge → disable flow
+- [x] Migration: kolom `two_factor_secret` dan `two_factor_confirmed_at` di `users` (`add_two_factor_to_users_table`)
+- [x] `POST /api/auth/two-factor-authentication` — enable 2FA, return secret + QR URL
+- [x] `POST /api/auth/two-factor-authentication/confirm` — konfirmasi TOTP code untuk aktivasi
+- [x] `DELETE /api/auth/two-factor-authentication` — disable 2FA (butuh TOTP code)
+- [x] `POST /api/auth/two-factor-challenge` — verifikasi TOTP code saat login (pakai temp_token)
+- [x] Login flow: jika 2FA aktif, return `temp_token` (ability: `2fa-challenge`, expire 5 menit) — token penuh tidak dikembalikan sampai TOTP diverifikasi
+- [ ] Android: screen TOTP input setelah login sukses jika 2FA aktif — dikerjakan di track Android v2
+- [x] Feature test: enable → confirm → login challenge → disable flow (`TwoFactorTest`)
+
+### Dependencies
+- [x] `pragmarx/google2fa-laravel` ^3.0 terinstall

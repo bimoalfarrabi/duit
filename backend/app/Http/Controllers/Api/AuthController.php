@@ -41,7 +41,19 @@ class AuthController extends Controller
             return $this->error('Email atau password salah', 401);
         }
 
-        $user  = Auth::user();
+        $user = Auth::user();
+
+        // Jika 2FA aktif, return temp token — client harus lanjut ke /two-factor-challenge
+        if ($user->two_factor_confirmed_at) {
+            $tempToken = $user->createToken('2fa-temp', ['2fa-challenge'], now()->addMinutes(5))->plainTextToken;
+            Log::info('login_2fa_required', ['user_id' => $user->id, 'ip' => $request->ip()]);
+
+            return $this->success([
+                'requires_2fa' => true,
+                'temp_token'   => $tempToken,
+            ], '2FA diperlukan');
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         Log::info('login_success', ['user_id' => $user->id, 'ip' => $request->ip()]);
