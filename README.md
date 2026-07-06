@@ -14,7 +14,7 @@ Ekosistem pencatatan keuangan personal yang cepat, terpusat, dan bisa di-self-ho
 ![Material 3](https://img.shields.io/badge/Material_3-Expressive-7C4DFF?logo=materialdesign&logoColor=white)
 ![Hilt](https://img.shields.io/badge/Hilt-DI-2496ED?logo=dagger&logoColor=white)
 ![Sanctum](https://img.shields.io/badge/Sanctum-Token-FF2D20?logo=laravel&logoColor=white)
-![PHPUnit](https://img.shields.io/badge/PHPUnit-19/19-brightgreen?logo=phpunit&logoColor=white)
+![PHPUnit](https://img.shields.io/badge/PHPUnit-49/49-brightgreen?logo=phpunit&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ## Deskripsi Singkat
@@ -65,6 +65,8 @@ Native Android app sebagai input utama. Arsitektur clean (data → domain → ui
 | Kotlin Coroutines | — | Async operations |
 | Navigation Compose | — | Bottom nav + nested NavHost |
 | EncryptedSharedPreferences | — | Token storage (AES256-GCM, via Jetpack Security) |
+| Room | 2.6.1 | Local cache (offline-first, 4 entities) |
+| WorkManager | — | Background job: cek budget & savings harian |
 | JUnit4 + Mockito | — | Unit testing |
 
 **Pattern:** MVVM + Repository, `Result<T>` error handling, `StateFlow` untuk UI state, sealed class untuk state modeling.
@@ -102,7 +104,7 @@ Native Android app sebagai input utama. Arsitektur clean (data → domain → ui
 | Versi | Fokus | Status |
 |-------|-------|--------|
 | **v1** | Input manual, Laravel API, Astro dashboard | ✅ Live |
-| **v2** | Budget & savings, notifikasi, password reset, email verification, 2FA | ⬜ Backlog |
+| **v2** | Budget & savings, notifikasi, password reset, email verification, 2FA | ✅ Done |
 | **v3** | OCR scan struk (on-device ML Kit) | ⬜ Backlog |
 | **v4** | Voice input (on-device SpeechRecognizer) | ⬜ Backlog |
 | **v5** | Multi-user lanjutan (family wallet) | ⬜ Backlog |

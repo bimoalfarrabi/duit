@@ -166,8 +166,8 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 - [x] Deploy backend ke shared hosting → berfungsi (`api.duit.viasco.my.id`)
 - [x] Astro build + deploy → `npm run build` sukses (`duit.viasco.my.id`)
 - [x] Android APK debug build sukses
-- [ ] End-to-end: tambah transaksi di Android → muncul di dashboard web
-- [ ] Data isolation: user A tidak bisa lihat data user B
+- [x] End-to-end: tambah transaksi di Android → muncul di dashboard web
+- [x] Data isolation: user A tidak bisa lihat data user B
 
 ## Deploy Notes (Production)
 
