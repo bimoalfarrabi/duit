@@ -1,5 +1,6 @@
 package com.duit.app.ui.navigation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
