@@ -281,8 +281,8 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 - [x] `OcrViewModel.kt`: `@Volatile isStopped` flag — analyzer berhenti setelah first attempt, reset() clear flag → infinite loop putus
 - [x] `OcrScreen.kt`: fullscreen `Box` (hapus `Scaffold`+`TopAppBar`), floating back button, `FILL_CENTER + COMPATIBLE_MODE` → kamera fullscreen
 - [x] `NavGraph.kt`: `showBottomBar` exclude `Screen.Ocr.route` + `Screen.Add.route` (startsWith check) → double TopAppBar hilang
-- [x] `NavGraph.kt`: FAB speed dial → `FloatingActionButtonMenu` + `ToggleFloatingActionButton` + `FloatingActionButtonMenuItem` (M3 Expressive)
-- [x] `libs.versions.toml`: upgrade `compose-bom` dari `2024.12.01` ke `2025.06.01`
+- [x] `NavGraph.kt`: FAB speed dial dengan custom `Column/Row/SmallFloatingActionButton` — 2 aksi: Scan Struk (CameraAlt) + Tambah Manual (Add); main FAB icon Add↔Close saat expanded
+- [-] `FloatingActionButtonMenu` (M3 Expressive) — API baru di M3 1.5.0-alpha, belum ada di BOM 2024.12.01 stable, tunda sampai stable release
 
 ### QA v3 OCR
 
