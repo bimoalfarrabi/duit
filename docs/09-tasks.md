@@ -281,10 +281,30 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 - [x] `OcrViewModel.kt`: `@Volatile isStopped` flag — analyzer berhenti setelah first attempt, reset() clear flag → infinite loop putus
 - [x] `OcrScreen.kt`: fullscreen `Box` (hapus `Scaffold`+`TopAppBar`), floating back button, `FILL_CENTER + COMPATIBLE_MODE` → kamera fullscreen
 - [x] `NavGraph.kt`: `showBottomBar` exclude `Screen.Ocr.route` + `Screen.Add.route` (startsWith check) → double TopAppBar hilang
-- [x] `NavGraph.kt`: FAB speed dial dengan custom `Column/Row/SmallFloatingActionButton` — 2 aksi: Scan Struk (CameraAlt) + Tambah Manual (Add); main FAB icon Add↔Close saat expanded
+- [x] `NavGraph.kt`: FAB speed dial pill items — `AnimatedVisibility` slide-up/fade, `FabMenuItem` composable (icon + label pill, `secondaryContainer`, `extraLarge` shape)
 - [-] `FloatingActionButtonMenu` (M3 Expressive) — API baru di M3 1.5.0-alpha, belum ada di BOM 2024.12.01 stable, tunda sampai stable release
 
 ### QA v3 OCR
 
 - [ ] Build APK debug sukses
 - [ ] Test manual: scan struk → prefill form transaksi
+
+---
+
+## Rencana v4 — Voice Input
+
+### Android v4 Voice (Planned)
+
+- [ ] `VoiceInputScreen.kt`: Android `SpeechRecognizer` (on-device) — minta RECORD_AUDIO permission, tampil waveform/listening overlay
+- [ ] `VoiceParser.kt`: regex/NLP parser — ekstrak nominal (`18000`, `18rb`, `18k`), tipe (`beli`, `bayar` = expense; `terima`, `dapat` = income), judul (sisa kalimat)
+- [ ] `VoiceViewModel.kt`: orchestrate SpeechRecognizer → VoiceParser → expose `VoiceUiState`
+- [ ] `NavGraph.kt`: tambah route `voice`, FAB speed dial item ketiga — **Input Suara** → `VoiceInputScreen`
+- [ ] `AddTransactionScreen.kt`: tambah prefill via nav args `voice_title/voice_amount/voice_type` (sama pola OCR)
+- [ ] `VoiceParserTest.kt`: unit test berbagai format kalimat
+- [ ] `AndroidManifest.xml`: tambah `RECORD_AUDIO` permission
+
+### Catatan Teknis v4
+- Tidak ada LLM — semua parsing on-device via regex + keyword matching
+- SpeechRecognizer pakai `ACTION_RECOGNIZE_SPEECH` intent atau `RecognizerIntent`
+- FAB akan punya 3 item: Scan Struk + Input Suara + Tambah Manual
+- Pola prefill via nav args konsisten dengan v3 OCR

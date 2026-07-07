@@ -46,8 +46,9 @@ Bottom nav bar — 3 tab: **Home / History / Wallet** + FAB speed dial di HomeSc
 - `MainGraph`: `HomeScreen`, `AddTransactionScreen`, `TransactionListScreen`, `CategoryScreen`, `WalletScreen`, `OcrScreen`
 - Startup check: ada token → MainGraph, tidak ada → AuthGraph
 - Login dengan 2FA aktif → `TotpScreen` dengan `tempToken` sebagai route argument
-- FAB HomeScreen: `FloatingActionButtonMenu` (M3 Expressive, BOM 2025.06.01) — 2 aksi: **Scan Struk** → `OcrScreen`, **Tambah Manual** → `AddTransactionScreen`
+- FAB HomeScreen: speed dial pill items (`AnimatedVisibility` slide-up/fade, `FabMenuItem` composable) — **Scan Struk** → `OcrScreen`, **Tambah Manual** → `AddTransactionScreen`
 - `OcrScreen` fullscreen (tidak ada BottomBar / TopAppBar), hasil parse prefill `AddTransactionScreen` via nav args `ocr_title`, `ocr_amount`, `ocr_date`
+- **v4 plan:** FAB akan punya item ketiga — **Input Suara** → `VoiceInputScreen` (Android SpeechRecognizer, on-device parser)
 
 ## Screens
 

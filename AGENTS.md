@@ -154,10 +154,27 @@ Selalu load skill yang relevan sebelum mulai kerja:
 
 Fitur ini ada di roadmap tapi **belum waktunya** — tolak jika diminta sebelum versinya:
 
-- OCR scan struk → v3
 - Voice input → v4
 - Export PDF/Excel → v2+
 - Family wallet / shared budget → v5
+
+---
+
+## Progress v3 ✅ Done
+
+### Selesai
+- ✅ `OcrParser.kt`: regex ekstrak nominal, tanggal, judul (on-device, no LLM)
+- ✅ `OcrViewModel.kt`: ML Kit TextRecognition + `@Volatile isStopped` flag (infinite loop fix)
+- ✅ `OcrScreen.kt`: fullscreen CameraX preview (`FILL_CENTER + COMPATIBLE_MODE`), floating back button
+- ✅ `NavGraph.kt`: route `ocr`, OCR result navigate ke `AddTransactionScreen` via nav args `ocr_title/ocr_amount/ocr_date`
+- ✅ `AddTransactionScreen.kt`: prefill dari nav args, `onNavigateToOcr` dihapus
+- ✅ FAB speed dial di HomeScreen: pill items (`AnimatedVisibility` slide-up/fade) — Scan Struk + Tambah Manual
+- ✅ `OcrParserTest.kt`: 8 unit test
+
+### Catatan Teknis
+- FAB menu pakai custom `FabMenuItem` composable (M3 1.3.x / BOM 2024.12.01 stable)
+- `FloatingActionButtonMenu` dari M3 Expressive ditunda → masih di 1.5.0-alpha (unreleased)
+- OCR entry point: FAB HomeScreen → bukan dari `AddTransactionScreen` TopAppBar
 
 ---
 

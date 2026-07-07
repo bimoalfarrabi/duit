@@ -6,7 +6,7 @@
 |-------|-------|--------|
 | **v1** | Input manual, Laravel API, Astro dashboard | ✅ Live |
 | **v2** | Budget & savings | ✅ Done |
-| **v3** | OCR scan struk | ⬜ Backlog |
+| **v3** | OCR scan struk | ✅ Done |
 | **v4** | Voice input | ⬜ Backlog |
 | **v5** | Multi-user lanjutan | ⬜ Backlog |
 
@@ -49,8 +49,10 @@
 
 - Kamera → Google ML Kit Text Recognition (on-device)
 - Parser regex: ekstrak nominal, judul, tanggal
-- Review screen sebelum submit
-- Server hanya terima JSON hasil parsing
+- Prefill `AddTransactionScreen` langsung via nav args
+- Entry point: FAB speed dial di HomeScreen (bukan dari form)
+
+**Tidak ada LLM** — semua parsing on-device.
 
 ---
 
@@ -61,6 +63,7 @@
 - Android SpeechRecognizer → teks (on-device)
 - Parser kalimat: `"kopi 18000"` → `{ title, amount, type }`
 - Konfirmasi sebelum submit
+- Entry point: FAB speed dial di HomeScreen — item ketiga setelah Scan Struk + Tambah Manual
 
 **Tidak ada LLM** — semua parsing on-device.
 
