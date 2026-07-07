@@ -29,6 +29,7 @@ import com.duit.app.ui.auth.TotpScreen
 import com.duit.app.ui.budget.BudgetScreen
 import com.duit.app.ui.category.CategoryScreen
 import com.duit.app.ui.home.HomeScreen
+import com.duit.app.ui.ocr.OcrScreen
 import com.duit.app.ui.savings.SavingsScreen
 import com.duit.app.ui.transaction.AddTransactionScreen
 import com.duit.app.ui.transaction.TransactionListScreen
@@ -41,6 +42,7 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
     object Wallet : Screen("wallets", "Dompet", Icons.Default.AccountBox)
     object Budget : Screen("budgets", "Budget", Icons.Default.List)
     object Savings : Screen("savings", "Tabungan", Icons.Default.Person)
+    object Ocr : Screen("ocr", "Scan Struk", Icons.Default.Add)
 }
 
 val bottomNavItems = listOf(Screen.Home, Screen.History, Screen.Wallet)
@@ -191,7 +193,17 @@ fun MainScreen(onLogout: () -> Unit) {
                 popEnterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { -it } },
                 popExitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } }
             ) {
-                AddTransactionScreen(onBack = { navController.popBackStack() })
+                val ocrTitle = it.savedStateHandle.get<String>("ocr_title")
+                val ocrAmount = it.savedStateHandle.get<String>("ocr_amount")
+                val ocrDate = it.savedStateHandle.get<String>("ocr_date")
+                val ocrPrefill = if (ocrTitle != null || ocrAmount != null) {
+                    Triple(ocrTitle.orEmpty(), ocrAmount.orEmpty(), ocrDate.orEmpty())
+                } else null
+                AddTransactionScreen(
+                    onBack = { navController.popBackStack() },
+                    onNavigateToOcr = { navController.navigate(Screen.Ocr.route) },
+                    ocrPrefill = ocrPrefill
+                )
             }
 
             composable(
@@ -249,6 +261,31 @@ fun MainScreen(onLogout: () -> Unit) {
                 popEnterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { -it } },
                 popExitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } }
             ) { SavingsScreen() }
+
+            composable(
+                route = Screen.Ocr.route,
+                enterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { it } },
+                exitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } },
+                popEnterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { -it } },
+                popExitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } }
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(Screen.Add.route)
+                }
+                OcrScreen(
+                    onBack = { navController.popBackStack() },
+                    onResult = { title, amount, date ->
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.let { handle ->
+                                handle["ocr_title"] = title
+                                handle["ocr_amount"] = amount
+                                handle["ocr_date"] = date
+                            }
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
     }
 }

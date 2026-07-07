@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -20,6 +21,9 @@ import java.time.LocalDate
 @Composable
 fun AddTransactionScreen(
     onBack: () -> Unit,
+    onNavigateToOcr: () -> Unit = {},
+    // ponytail: prefill from OCR passed as nullable triple, no extra wrapper class needed
+    ocrPrefill: Triple<String, String, String>? = null,
     viewModel: AddTransactionViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -31,6 +35,15 @@ fun AddTransactionScreen(
     var date by remember { mutableStateOf(LocalDate.now().toString()) }
     var note by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // Apply OCR prefill once when non-null
+    LaunchedEffect(ocrPrefill) {
+        ocrPrefill?.let { (ocrTitle, ocrAmount, ocrDate) ->
+            if (ocrTitle.isNotBlank()) title = ocrTitle
+            if (ocrAmount.isNotBlank()) amount = ocrAmount
+            if (ocrDate.isNotBlank()) date = ocrDate
+        }
+    }
 
     LaunchedEffect(uiState.isSuccess) { if (uiState.isSuccess) onBack() }
     LaunchedEffect(uiState.error) {
@@ -52,6 +65,11 @@ fun AddTransactionScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = onNavigateToOcr) {
+                        Icon(Icons.Default.CameraAlt, contentDescription = "Scan Struk")
                     }
                 }
             )

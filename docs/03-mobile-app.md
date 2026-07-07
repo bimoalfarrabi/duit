@@ -101,6 +101,15 @@ Bottom nav bar — 3 tab: **Home / History / Wallet** + FAB untuk tambah transak
 - Auto-complete di backend jika `current_amount >= target_amount`
 - Route: `savings`
 
+### OcrScreen (v3)
+- Kamera preview via CameraX (`camera-view 1.3.1`)
+- ML Kit Text Recognition on-device (Google ML Kit `text-recognition 16.0.1`)
+- Auto-analyze frame saat kamera stabil, tampil loading overlay saat processing
+- Hasil parse → prefill `AddTransactionScreen` (judul, nominal, tanggal)
+- Permission kamera: inline `ActivityResultContracts.RequestPermission`
+- Tidak ada network call — semua on-device
+- Route: `ocr` (navigate dari `AddTransactionScreen` via ikon kamera di TopAppBar)
+
 ## API Interface (`data/remote/ApiService.kt`)
 
 ```kotlin

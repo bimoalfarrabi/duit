@@ -242,8 +242,8 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 
 - [x] `phpunit --filter="BudgetTest|SavingsGoalTest"` → 13/13 passed
 - [x] Full suite → 49/49 passed (1 skip)
-- [ ] Deploy ke production + run migration
-- [ ] Update docs v2 selesai
+- [x] Deploy ke production + run migration
+- [x] Update docs v2 selesai
 
 ### Android v2 Budget & Savings
 
@@ -260,3 +260,23 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 - [x] `BudgetCheckWorker.kt` — cek budget > 80% terpakai + savings goal tercapai
 - [x] Schedule `PeriodicWorkRequest` 1x/hari di `DuitApplication`
 - [x] `AndroidManifest`: `POST_NOTIFICATIONS` + `RECEIVE_BOOT_COMPLETED` permissions
+
+---
+
+## Rencana v3 — OCR Scan Struk
+
+### Android v3 OCR
+
+- [x] Tambah deps: `mlkit-text-recognition 16.0.1` + `camerax 1.3.1` ke `libs.versions.toml` + `build.gradle.kts`
+- [x] `AndroidManifest.xml`: tambah `CAMERA` permission + `uses-feature` (required=false)
+- [x] `OcrParser.kt`: regex ekstrak nominal (dengan/tanpa Rp), tanggal (DD/MM/YYYY, YYYY-MM-DD), judul (skip keyword total/subtotal/dll)
+- [x] `OcrViewModel.kt`: ML Kit `TextRecognition`, process `ImageProxy`, parse result, expose `OcrUiState`
+- [x] `OcrScreen.kt`: CameraX preview + `ImageAnalysis`, permission via `ActivityResultContracts`, loading overlay, instruksi overlay
+- [x] `AddTransactionScreen.kt`: tambah `onNavigateToOcr` param + `ocrPrefill: Triple?` prefill via `LaunchedEffect` + ikon `CameraAlt` di TopAppBar
+- [x] `NavGraph.kt`: tambah route `ocr`, pass result via `savedStateHandle`, wire `ocrPrefill` ke `AddTransactionScreen`
+- [x] `OcrParserTest.kt`: 8 unit test (amount, date, title, fallback, empty)
+
+### QA v3 OCR
+
+- [ ] Build APK debug sukses
+- [ ] Test manual: scan struk → prefill form transaksi
