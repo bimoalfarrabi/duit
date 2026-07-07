@@ -11,7 +11,7 @@ Ekosistem pencatatan keuangan personal yang cepat, terpusat, dan bisa di-self-ho
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?logo=kotlin&logoColor=white)
 ![Jetpack Compose](https://img.shields.io/badge/Jetpack_Compose-BOM_2024.12-4285F4?logo=jetpackcompose&logoColor=white)
-![Material 3](https://img.shields.io/badge/Material_3-Expressive-7C4DFF?logo=materialdesign&logoColor=white)
+![Material 3](https://img.shields.io/badge/Material_3-1.3.x-7C4DFF?logo=materialdesign&logoColor=white)
 ![Hilt](https://img.shields.io/badge/Hilt-DI-2496ED?logo=dagger&logoColor=white)
 ![Sanctum](https://img.shields.io/badge/Sanctum-Token-FF2D20?logo=laravel&logoColor=white)
 ![PHPUnit](https://img.shields.io/badge/PHPUnit-49/49-brightgreen?logo=phpunit&logoColor=white)
@@ -58,7 +58,7 @@ Native Android app sebagai input utama. Arsitektur clean (data → domain → ui
 |-----------|-------|-------|
 | Kotlin | 2.0 | Bahasa utama |
 | Jetpack Compose | BOM 2024.12 | Declarative UI toolkit |
-| Material 3 Expressive | — | Design system (ExpressiveShapes, bold headlines) |
+| Material 3 | 1.3.x | Design system (dynamic color, typography, shapes) |
 | Hilt | — | Dependency injection |
 | Retrofit | 2 | HTTP client ke Laravel API |
 | OkHttp | 4 | HTTP interceptor (AuthInterceptor, logging) |
@@ -105,7 +105,7 @@ Native Android app sebagai input utama. Arsitektur clean (data → domain → ui
 |-------|-------|--------|
 | **v1** | Input manual, Laravel API, Astro dashboard | ✅ Live |
 | **v2** | Budget & savings, notifikasi, password reset, email verification, 2FA | ✅ Done |
-| **v3** | OCR scan struk (on-device ML Kit) | ⬜ Backlog |
+| **v3** | OCR scan struk (on-device ML Kit) | ✅ Done |
 | **v4** | Voice input (on-device SpeechRecognizer) | ⬜ Backlog |
 | **v5** | Multi-user lanjutan (family wallet) | ⬜ Backlog |
 
