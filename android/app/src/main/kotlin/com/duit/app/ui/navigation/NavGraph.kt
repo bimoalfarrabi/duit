@@ -3,6 +3,10 @@ package com.duit.app.ui.navigation
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
@@ -149,64 +153,36 @@ fun MainScreen(onLogout: () -> Unit) {
         },
         floatingActionButton = {
             if (currentRoute == Screen.Home.route) {
-                // ponytail: custom speed dial — Column/Row layout, no extra dependency
                 var fabExpanded by remember { mutableStateOf(false) }
                 Column(horizontalAlignment = Alignment.End) {
-                    if (fabExpanded) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End
+                    // ponytail: AnimatedVisibility per item — slide up + fade, no custom animator
+                    AnimatedVisibility(
+                        visible = fabExpanded,
+                        enter = slideInVertically(tween(200)) { it / 2 } + fadeIn(tween(200)),
+                        exit = slideOutVertically(tween(150)) { it / 2 } + fadeOut(tween(150))
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Surface(
-                                shape = MaterialTheme.shapes.small,
-                                color = MaterialTheme.colorScheme.surface,
-                                shadowElevation = 2.dp
-                            ) {
-                                Text(
-                                    "Scan Struk",
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                                    style = MaterialTheme.typography.labelLarge
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(8.dp))
-                            SmallFloatingActionButton(
+                            FabMenuItem(
+                                icon = Icons.Default.CameraAlt,
+                                label = "Scan Struk",
                                 onClick = {
                                     fabExpanded = false
                                     navController.navigate(Screen.Ocr.route)
-                                },
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer
-                            ) {
-                                Icon(Icons.Default.CameraAlt, contentDescription = "Scan Struk")
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Surface(
-                                shape = MaterialTheme.shapes.small,
-                                color = MaterialTheme.colorScheme.surface,
-                                shadowElevation = 2.dp
-                            ) {
-                                Text(
-                                    "Tambah Manual",
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                                    style = MaterialTheme.typography.labelLarge
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(8.dp))
-                            SmallFloatingActionButton(
+                                }
+                            )
+                            FabMenuItem(
+                                icon = Icons.Default.Add,
+                                label = "Tambah Manual",
                                 onClick = {
                                     fabExpanded = false
                                     navController.navigate(Screen.Add.baseRoute) { launchSingleTop = true }
-                                },
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer
-                            ) {
-                                Icon(Icons.Default.Add, contentDescription = "Tambah Manual")
-                            }
+                                }
+                            )
+                            Spacer(Modifier.height(4.dp))
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
                     }
                     FloatingActionButton(onClick = { fabExpanded = !fabExpanded }) {
                         Icon(
@@ -358,6 +334,43 @@ fun MainScreen(onLogout: () -> Unit) {
                             popUpTo(Screen.Ocr.route) { inclusive = true }
                         }
                     }
+                )
+            }
+        }
+    }
+}
+
+// ponytail: private helper — pill FAB menu item (icon + label), used in speed dial only
+@Composable
+private fun FabMenuItem(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    onClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
+    ) {
+        Surface(
+            shape = MaterialTheme.shapes.extraLarge,
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            shadowElevation = 2.dp,
+            tonalElevation = 2.dp
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    label,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
         }
