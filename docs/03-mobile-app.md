@@ -40,12 +40,14 @@ implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
 ## Navigation
 
-Bottom nav bar — 3 tab: **Home / History / Wallet** + FAB untuk tambah transaksi
+Bottom nav bar — 3 tab: **Home / History / Wallet** + FAB speed dial di HomeScreen
 
 - `AuthGraph`: `LoginScreen`, `TotpScreen`
-- `MainGraph`: `HomeScreen`, `AddTransactionScreen`, `TransactionListScreen`, `CategoryScreen`, `WalletScreen`
+- `MainGraph`: `HomeScreen`, `AddTransactionScreen`, `TransactionListScreen`, `CategoryScreen`, `WalletScreen`, `OcrScreen`
 - Startup check: ada token → MainGraph, tidak ada → AuthGraph
 - Login dengan 2FA aktif → `TotpScreen` dengan `tempToken` sebagai route argument
+- FAB HomeScreen: `FloatingActionButtonMenu` (M3 Expressive, BOM 2025.06.01) — 2 aksi: **Scan Struk** → `OcrScreen`, **Tambah Manual** → `AddTransactionScreen`
+- `OcrScreen` fullscreen (tidak ada BottomBar / TopAppBar), hasil parse prefill `AddTransactionScreen` via nav args `ocr_title`, `ocr_amount`, `ocr_date`
 
 ## Screens
 

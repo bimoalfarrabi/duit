@@ -272,9 +272,17 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 - [x] `OcrParser.kt`: regex ekstrak nominal (dengan/tanpa Rp), tanggal (DD/MM/YYYY, YYYY-MM-DD), judul (skip keyword total/subtotal/dll)
 - [x] `OcrViewModel.kt`: ML Kit `TextRecognition`, process `ImageProxy`, parse result, expose `OcrUiState`
 - [x] `OcrScreen.kt`: CameraX preview + `ImageAnalysis`, permission via `ActivityResultContracts`, loading overlay, instruksi overlay
-- [x] `AddTransactionScreen.kt`: tambah `onNavigateToOcr` param + `ocrPrefill: Triple?` prefill via `LaunchedEffect` + ikon `CameraAlt` di TopAppBar
-- [x] `NavGraph.kt`: tambah route `ocr`, pass result via `savedStateHandle`, wire `ocrPrefill` ke `AddTransactionScreen`
+- [x] `AddTransactionScreen.kt`: baca OCR prefill dari nav args (`ocr_title`, `ocr_amount`, `ocr_date`) via `backStackEntry.arguments`
+- [x] `NavGraph.kt`: tambah route `ocr`, OCR result navigate ke `Screen.Add.withOcr(...)` + pop OCR dari backstack
 - [x] `OcrParserTest.kt`: 8 unit test (amount, date, title, fallback, empty)
+
+### Bug fixes & UX — OCR flow (v3 polish)
+
+- [x] `OcrViewModel.kt`: `@Volatile isStopped` flag — analyzer berhenti setelah first attempt, reset() clear flag → infinite loop putus
+- [x] `OcrScreen.kt`: fullscreen `Box` (hapus `Scaffold`+`TopAppBar`), floating back button, `FILL_CENTER + COMPATIBLE_MODE` → kamera fullscreen
+- [x] `NavGraph.kt`: `showBottomBar` exclude `Screen.Ocr.route` + `Screen.Add.route` (startsWith check) → double TopAppBar hilang
+- [x] `NavGraph.kt`: FAB speed dial → `FloatingActionButtonMenu` + `ToggleFloatingActionButton` + `FloatingActionButtonMenuItem` (M3 Expressive)
+- [x] `libs.versions.toml`: upgrade `compose-bom` dari `2024.12.01` ke `2025.06.01`
 
 ### QA v3 OCR
 

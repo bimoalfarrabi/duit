@@ -28,7 +28,6 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import java.util.concurrent.Executors
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OcrScreen(
     onBack: () -> Unit,
@@ -37,6 +36,7 @@ fun OcrScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val snackbarHostState = remember { SnackbarHostState() }
 
     // ponytail: inline permission check — no accompanist needed
@@ -63,86 +63,106 @@ fun OcrScreen(
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
             snackbarHostState.showSnackbar(it)
-            viewModel.clearError()
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = {
-            TopAppBar(
-                title = { Text("Scan Struk") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
-                    }
-                }
+    // ponytail: fullscreen Box — no Scaffold/TopAppBar, avoids double bar + inset push
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (hasCameraPermission) {
+            CameraPreview(
+                onImageCaptured = { proxy -> viewModel.analyzeImage(proxy) },
+                modifier = Modifier.fillMaxSize()
             )
-        }
-    ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            if (hasCameraPermission) {
-                CameraPreview(onImageCaptured = { imageProxy -> viewModel.analyzeImage(imageProxy) })
-
-                if (uiState.isScanning) {
-                    Box(
-                        modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                            Spacer(Modifier.height(16.dp))
-                            Text("Memproses struk...", color = Color.White)
-                        }
-                    }
-                } else {
-                    Box(modifier = Modifier.align(Alignment.BottomCenter).padding(24.dp)) {
-                        Card(
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)
-                            )
-                        ) {
-                            Text(
-                                text = "Arahkan kamera ke struk belanja.\nKamera akan otomatis membaca teks.",
-                                modifier = Modifier.padding(16.dp),
-                                style = MaterialTheme.typography.bodyMedium,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-                }
-            } else {
-                Column(
-                    modifier = Modifier.fillMaxSize().padding(32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        "Izin kamera diperlukan untuk scan struk.",
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    Button(onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }) {
-                        Text("Izinkan Kamera")
-                    }
-                }
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Izin kamera diperlukan untuk memindai struk.",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(24.dp)
+                )
             }
         }
+
+        // Floating back button — top-left overlay
+        IconButton(
+            onClick = onBack,
+            modifier = Modifier
+                .padding(top = 48.dp, start = 8.dp)
+                .align(Alignment.TopStart)
+                .background(Color.Black.copy(alpha = 0.4f), shape = RoundedCornerShape(50))
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Kembali",
+                tint = Color.White
+            )
+        }
+
+        // Status overlay — bottom center
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 48.dp)
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (uiState.isScanning) {
+                CircularProgressIndicator(color = Color.White)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Memindai struk...",
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            } else if (uiState.error != null) {
+                // Error state: show retry button
+                Button(
+                    onClick = { viewModel.reset() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White.copy(alpha = 0.9f),
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Coba Lagi")
+                }
+            } else {
+                Text(
+                    text = "Arahkan kamera ke struk",
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .background(Color.Black.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+            }
+        }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
 @Composable
-private fun CameraPreview(onImageCaptured: (androidx.camera.core.ImageProxy) -> Unit) {
+private fun CameraPreview(
+    onImageCaptured: (androidx.camera.core.ImageProxy) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    // ponytail: single-thread executor — one frame at a time is enough for OCR
     val executor = remember { Executors.newSingleThreadExecutor() }
 
     AndroidView(
         factory = { ctx ->
-            val previewView = PreviewView(ctx)
+            val previewView = PreviewView(ctx).apply {
+                // ponytail: FILL_CENTER + COMPATIBLE_MODE = true fullscreen, no letterbox
+                scaleType = PreviewView.ScaleType.FILL_CENTER
+                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+            }
             ProcessCameraProvider.getInstance(ctx).addListener({
                 val cameraProvider = ProcessCameraProvider.getInstance(ctx).get()
                 val preview = Preview.Builder().build().also {
@@ -161,6 +181,6 @@ private fun CameraPreview(onImageCaptured: (androidx.camera.core.ImageProxy) -> 
             }, ContextCompat.getMainExecutor(ctx))
             previewView
         },
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier
     )
 }

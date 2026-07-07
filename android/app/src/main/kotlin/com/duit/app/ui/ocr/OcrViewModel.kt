@@ -28,11 +28,14 @@ class OcrViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(OcrUiState())
     val uiState: StateFlow<OcrUiState> = _uiState.asStateFlow()
 
+    // ponytail: atomic flag — stops analyzer after first result/error, only reset() clears it
+    @Volatile private var isStopped = false
+
     // ponytail: lazy-init recognizer, reused across captures
     private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
     fun analyzeImage(imageProxy: ImageProxy) {
-        if (_uiState.value.isScanning) {
+        if (isStopped || _uiState.value.isScanning) {
             imageProxy.close()
             return
         }
@@ -57,6 +60,7 @@ class OcrViewModel @Inject constructor() : ViewModel() {
 
                 val rawText = result.text
                 if (rawText.isBlank()) {
+                    isStopped = true
                     _uiState.value = _uiState.value.copy(
                         isScanning = false,
                         error = "Teks tidak terdeteksi. Coba arahkan kamera lebih dekat."
@@ -64,10 +68,12 @@ class OcrViewModel @Inject constructor() : ViewModel() {
                     return@launch
                 }
 
+                isStopped = true
                 val parsed = OcrParser.parse(rawText)
                 _uiState.value = _uiState.value.copy(isScanning = false, parseResult = parsed)
             } catch (e: Exception) {
                 imageProxy.close()
+                isStopped = true
                 _uiState.value = _uiState.value.copy(
                     isScanning = false,
                     error = "Gagal memproses gambar: ${e.message}"
@@ -81,6 +87,7 @@ class OcrViewModel @Inject constructor() : ViewModel() {
     }
 
     fun reset() {
+        isStopped = false
         _uiState.value = OcrUiState()
     }
 

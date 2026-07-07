@@ -5,12 +5,13 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,10 +20,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.duit.app.data.local.TokenStorage
 import com.duit.app.ui.auth.LoginScreen
 import com.duit.app.ui.auth.TotpScreen
@@ -37,12 +40,17 @@ import com.duit.app.ui.wallet.WalletScreen
 
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
     object Home : Screen("home", "Beranda", Icons.Default.Home)
-    object Add : Screen("add_transaction", "Tambah", Icons.Default.Add)
+    // ponytail: query params as nullable strings — no new wrapper class needed
+    object Add : Screen("add_transaction?ocr_title={ocr_title}&ocr_amount={ocr_amount}&ocr_date={ocr_date}", "Tambah", Icons.Default.Add) {
+        val baseRoute = "add_transaction"
+        fun withOcr(title: String, amount: String, date: String) =
+            "add_transaction?ocr_title=${title}&ocr_amount=${amount}&ocr_date=${date}"
+    }
     object History : Screen("transactions", "Riwayat", Icons.Default.List)
     object Wallet : Screen("wallets", "Dompet", Icons.Default.AccountBox)
     object Budget : Screen("budgets", "Budget", Icons.Default.List)
     object Savings : Screen("savings", "Tabungan", Icons.Default.Person)
-    object Ocr : Screen("ocr", "Scan Struk", Icons.Default.Add)
+    object Ocr : Screen("ocr", "Scan Struk", Icons.Default.CameraAlt)
 }
 
 val bottomNavItems = listOf(Screen.Home, Screen.History, Screen.Wallet)
@@ -112,6 +120,8 @@ fun MainScreen(onLogout: () -> Unit) {
     val currentRoute = currentDestination?.route
 
     val showBottomBar = currentRoute != Screen.Add.route
+        && currentRoute != Screen.Ocr.route
+        && currentRoute?.startsWith(Screen.Add.baseRoute) != true
 
     Scaffold(
         topBar = {
@@ -130,12 +140,37 @@ fun MainScreen(onLogout: () -> Unit) {
         },
         floatingActionButton = {
             if (currentRoute == Screen.Home.route) {
-                FloatingActionButton(onClick = {
-                    navController.navigate(Screen.Add.route) {
-                        launchSingleTop = true
+                var fabExpanded by remember { mutableStateOf(false) }
+                FloatingActionButtonMenu(
+                    expanded = fabExpanded,
+                    button = {
+                        ToggleFloatingActionButton(
+                            checked = fabExpanded,
+                            onCheckedChange = { fabExpanded = it }
+                        ) {
+                            Icon(
+                                if (fabExpanded) Icons.Default.Close else Icons.Default.Add,
+                                contentDescription = if (fabExpanded) "Tutup" else "Tambah"
+                            )
+                        }
                     }
-                }) {
-                    Icon(Icons.Default.Add, contentDescription = "Tambah Transaksi")
+                ) {
+                    FloatingActionButtonMenuItem(
+                        onClick = {
+                            fabExpanded = false
+                            navController.navigate(Screen.Ocr.route)
+                        },
+                        text = { Text("Scan Struk") },
+                        icon = { Icon(Icons.Default.CameraAlt, contentDescription = null) }
+                    )
+                    FloatingActionButtonMenuItem(
+                        onClick = {
+                            fabExpanded = false
+                            navController.navigate(Screen.Add.baseRoute) { launchSingleTop = true }
+                        },
+                        text = { Text("Tambah Manual") },
+                        icon = { Icon(Icons.Default.Add, contentDescription = null) }
+                    )
                 }
             }
         },
@@ -188,20 +223,24 @@ fun MainScreen(onLogout: () -> Unit) {
 
             composable(
                 route = Screen.Add.route,
+                arguments = listOf(
+                    navArgument("ocr_title") { type = NavType.StringType; nullable = true; defaultValue = null },
+                    navArgument("ocr_amount") { type = NavType.StringType; nullable = true; defaultValue = null },
+                    navArgument("ocr_date") { type = NavType.StringType; nullable = true; defaultValue = null }
+                ),
                 enterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { it } },
                 exitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } },
                 popEnterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { -it } },
                 popExitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } }
-            ) {
-                val ocrTitle = it.savedStateHandle.get<String>("ocr_title")
-                val ocrAmount = it.savedStateHandle.get<String>("ocr_amount")
-                val ocrDate = it.savedStateHandle.get<String>("ocr_date")
+            ) { backStackEntry ->
+                val ocrTitle = backStackEntry.arguments?.getString("ocr_title")
+                val ocrAmount = backStackEntry.arguments?.getString("ocr_amount")
+                val ocrDate = backStackEntry.arguments?.getString("ocr_date")
                 val ocrPrefill = if (ocrTitle != null || ocrAmount != null) {
                     Triple(ocrTitle.orEmpty(), ocrAmount.orEmpty(), ocrDate.orEmpty())
                 } else null
                 AddTransactionScreen(
                     onBack = { navController.popBackStack() },
-                    onNavigateToOcr = { navController.navigate(Screen.Ocr.route) },
                     ocrPrefill = ocrPrefill
                 )
             }
@@ -268,21 +307,13 @@ fun MainScreen(onLogout: () -> Unit) {
                 exitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } },
                 popEnterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { -it } },
                 popExitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } }
-            ) { backStackEntry ->
-                val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry(Screen.Add.route)
-                }
+            ) {
                 OcrScreen(
                     onBack = { navController.popBackStack() },
                     onResult = { title, amount, date ->
-                        navController.previousBackStackEntry
-                            ?.savedStateHandle
-                            ?.let { handle ->
-                                handle["ocr_title"] = title
-                                handle["ocr_amount"] = amount
-                                handle["ocr_date"] = date
-                            }
-                        navController.popBackStack()
+                        navController.navigate(Screen.Add.withOcr(title, amount, date)) {
+                            popUpTo(Screen.Ocr.route) { inclusive = true }
+                        }
                     }
                 )
             }

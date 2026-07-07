@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -21,8 +20,7 @@ import java.time.LocalDate
 @Composable
 fun AddTransactionScreen(
     onBack: () -> Unit,
-    onNavigateToOcr: () -> Unit = {},
-    // ponytail: prefill from OCR passed as nullable triple, no extra wrapper class needed
+    // ponytail: onNavigateToOcr removed — OCR access moved to FAB speed dial on HomeScreen
     ocrPrefill: Triple<String, String, String>? = null,
     viewModel: AddTransactionViewModel = hiltViewModel()
 ) {
@@ -65,11 +63,6 @@ fun AddTransactionScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onNavigateToOcr) {
-                        Text("Scan Struk")
                     }
                 }
             )
