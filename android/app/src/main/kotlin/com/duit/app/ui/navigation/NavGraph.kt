@@ -5,6 +5,13 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
@@ -15,8 +22,10 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -140,37 +149,71 @@ fun MainScreen(onLogout: () -> Unit) {
         },
         floatingActionButton = {
             if (currentRoute == Screen.Home.route) {
+                // ponytail: custom speed dial — Column/Row layout, no extra dependency
                 var fabExpanded by remember { mutableStateOf(false) }
-                FloatingActionButtonMenu(
-                    expanded = fabExpanded,
-                    button = {
-                        ToggleFloatingActionButton(
-                            checked = fabExpanded,
-                            onCheckedChange = { fabExpanded = it }
+                Column(horizontalAlignment = Alignment.End) {
+                    if (fabExpanded) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
                         ) {
-                            Icon(
-                                if (fabExpanded) Icons.Default.Close else Icons.Default.Add,
-                                contentDescription = if (fabExpanded) "Tutup" else "Tambah"
-                            )
+                            Surface(
+                                shape = MaterialTheme.shapes.small,
+                                color = MaterialTheme.colorScheme.surface,
+                                shadowElevation = 2.dp
+                            ) {
+                                Text(
+                                    "Scan Struk",
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                    style = MaterialTheme.typography.labelLarge
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            SmallFloatingActionButton(
+                                onClick = {
+                                    fabExpanded = false
+                                    navController.navigate(Screen.Ocr.route)
+                                },
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                            ) {
+                                Icon(Icons.Default.CameraAlt, contentDescription = "Scan Struk")
+                            }
                         }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Surface(
+                                shape = MaterialTheme.shapes.small,
+                                color = MaterialTheme.colorScheme.surface,
+                                shadowElevation = 2.dp
+                            ) {
+                                Text(
+                                    "Tambah Manual",
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                    style = MaterialTheme.typography.labelLarge
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            SmallFloatingActionButton(
+                                onClick = {
+                                    fabExpanded = false
+                                    navController.navigate(Screen.Add.baseRoute) { launchSingleTop = true }
+                                },
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                            ) {
+                                Icon(Icons.Default.Add, contentDescription = "Tambah Manual")
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
-                ) {
-                    FloatingActionButtonMenuItem(
-                        onClick = {
-                            fabExpanded = false
-                            navController.navigate(Screen.Ocr.route)
-                        },
-                        text = { Text("Scan Struk") },
-                        icon = { Icon(Icons.Default.CameraAlt, contentDescription = null) }
-                    )
-                    FloatingActionButtonMenuItem(
-                        onClick = {
-                            fabExpanded = false
-                            navController.navigate(Screen.Add.baseRoute) { launchSingleTop = true }
-                        },
-                        text = { Text("Tambah Manual") },
-                        icon = { Icon(Icons.Default.Add, contentDescription = null) }
-                    )
+                    FloatingActionButton(onClick = { fabExpanded = !fabExpanded }) {
+                        Icon(
+                            if (fabExpanded) Icons.Default.Close else Icons.Default.Add,
+                            contentDescription = if (fabExpanded) "Tutup" else "Tambah"
+                        )
+                    }
                 }
             }
         },
