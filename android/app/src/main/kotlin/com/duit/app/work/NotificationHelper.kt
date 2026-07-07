@@ -22,7 +22,7 @@ object NotificationHelper {
 
     fun send(context: Context, title: String, body: String) {
         val notif = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(android.R.drawable.ic_menu_camera)
             .setContentTitle(title)
             .setContentText(body)
             .setAutoCancel(true)

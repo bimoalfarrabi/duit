@@ -17,7 +17,11 @@ class DuitApplication : Application() {
 
     private fun scheduleBudgetCheck() {
         val request = PeriodicWorkRequestBuilder<BudgetCheckWorker>(1, TimeUnit.DAYS)
-            .setConstraints(Constraints(requiresNetwork = NetworkType.CONNECTED))
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            )
             .build()
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "budget_check",

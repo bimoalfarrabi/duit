@@ -11,8 +11,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 data class OcrUiState(
     val isScanning: Boolean = false,
@@ -45,7 +47,12 @@ class OcrViewModel @Inject constructor() : ViewModel() {
                     return@launch
                 }
                 val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-                val result = recognizer.process(image).await()
+                // ponytail: suspendCancellableCoroutine bridges ML Kit Task to coroutine — no extra dep needed
+                val result = suspendCancellableCoroutine { cont ->
+                    recognizer.process(image)
+                        .addOnSuccessListener { cont.resume(it) }
+                        .addOnFailureListener { cont.resumeWithException(it) }
+                }
                 imageProxy.close()
 
                 val rawText = result.text
