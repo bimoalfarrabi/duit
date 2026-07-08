@@ -43,12 +43,13 @@ implementation("androidx.security:security-crypto:1.1.0-alpha06")
 Bottom nav bar — 3 tab: **Home / History / Wallet** + FAB speed dial di HomeScreen
 
 - `AuthGraph`: `LoginScreen`, `TotpScreen`
-- `MainGraph`: `HomeScreen`, `AddTransactionScreen`, `TransactionListScreen`, `CategoryScreen`, `WalletScreen`, `OcrScreen`
+- `MainGraph`: `HomeScreen`, `AddTransactionScreen`, `TransactionListScreen`, `CategoryScreen`, `WalletScreen`, `OcrScreen`, `VoiceInputScreen`
 - Startup check: ada token → MainGraph, tidak ada → AuthGraph
 - Login dengan 2FA aktif → `TotpScreen` dengan `tempToken` sebagai route argument
 - FAB HomeScreen: speed dial pill items (`AnimatedVisibility` slide-up/fade, `FabMenuItem` composable) — **Scan Struk** → `OcrScreen`, **Tambah Manual** → `AddTransactionScreen`
 - `OcrScreen` fullscreen (tidak ada BottomBar / TopAppBar), hasil parse prefill `AddTransactionScreen` via nav args `ocr_title`, `ocr_amount`, `ocr_date`
-- **v4 plan:** FAB akan punya item ketiga — **Input Suara** → `VoiceInputScreen` (Android SpeechRecognizer, on-device parser)
+- FAB HomeScreen item ketiga: **Input Suara** → `VoiceInputScreen` (Android SpeechRecognizer, on-device parser) — v4 ✅
+- `VoiceInputScreen` fullscreen (tidak ada BottomBar / TopAppBar), hasil parse prefill `AddTransactionScreen` via nav args `voice_title`, `voice_amount`, `voice_type`
 
 ## Screens
 
@@ -103,6 +104,15 @@ Bottom nav bar — 3 tab: **Home / History / Wallet** + FAB speed dial di HomeSc
 - Tombol "Topup" → bottom sheet tambah nominal ke `current_amount`
 - Auto-complete di backend jika `current_amount >= target_amount`
 - Route: `savings`
+
+### VoiceInputScreen (v4)
+- Mic button + status text (idle / recording / hasil)
+- Android `SpeechRecognizer` API, locale `id-ID`, on-device, tidak ada network call
+- `VoiceParser` ekstrak nominal, tipe (income/expense), judul dari speech text via regex
+- Hasil parse → prefill `AddTransactionScreen` via nav args `voice_title`, `voice_amount`, `voice_type`
+- Permission mikrofon: inline `ActivityResultContracts.RequestPermission`
+- Fullscreen (tidak ada BottomBar / TopAppBar)
+- Route: `voice` (navigate dari FAB HomeScreen item ke-3)
 
 ### OcrScreen (v3)
 - Kamera preview via CameraX (`camera-view 1.3.1`)
