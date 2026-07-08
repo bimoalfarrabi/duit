@@ -106,7 +106,7 @@ Native Android app sebagai input utama. Arsitektur clean (data → domain → ui
 | **v1** | Input manual, Laravel API, Astro dashboard | ✅ Live |
 | **v2** | Budget & savings, notifikasi, password reset, email verification, 2FA | ✅ Done |
 | **v3** | OCR scan struk (on-device ML Kit) | ✅ Done |
-| **v4** | Voice input (on-device SpeechRecognizer) | ⬜ Backlog |
+| **v4** | Voice input (on-device SpeechRecognizer) | ✅ Done |
 | **v5** | Multi-user lanjutan (family wallet) | ⬜ Backlog |
 
 Detail roadmap: [`docs/07-roadmap.md`](docs/07-roadmap.md)

@@ -154,9 +154,26 @@ Selalu load skill yang relevan sebelum mulai kerja:
 
 Fitur ini ada di roadmap tapi **belum waktunya** — tolak jika diminta sebelum versinya:
 
-- Voice input → v4
 - Export PDF/Excel → v2+
 - Family wallet / shared budget → v5
+
+---
+
+## Progress v4 ✅ Done
+
+### Selesai
+- ✅ `VoiceParser.kt`: regex ekstrak nominal, tipe, judul dari speech text (on-device, no LLM)
+- ✅ `VoiceViewModel.kt`: `SpeechRecognizer` via `DisposableEffect`, locale `id-ID`
+- ✅ `VoiceInputScreen.kt`: fullscreen, pola OcrScreen, mic button + hasil teks + konfirmasi
+- ✅ `AndroidManifest.xml`: permission `RECORD_AUDIO`
+- ✅ `NavGraph.kt`: route `voice`, `Screen.Voice`, FAB item 3 (Mic icon), exclude voice dari `showBottomBar`, voice args di `Screen.Add`
+- ✅ `AddTransactionScreen.kt`: param `voicePrefill: Triple<String,String,String>?` + `LaunchedEffect(voicePrefill)` apply title/amount/type
+- ✅ `VoiceParserTest.kt`: 12 unit test
+
+### Catatan Teknis
+- Entry point: FAB HomeScreen item ke-3 (Mic icon) → VoiceInputScreen → AddTransactionScreen prefill
+- `SpeechRecognizer` API native Android, tidak ada dependency tambahan
+- Parsing: amount (angka + kata seperti "lima puluh ribu"), type (income/expense keywords), title (sisa teks)
 
 ---
 
