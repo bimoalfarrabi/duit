@@ -7,6 +7,7 @@ import com.duit.app.data.remote.dto.LoginResponse
 import com.duit.app.data.remote.dto.ApiResponse
 import com.duit.app.data.remote.dto.UserResponse
 import com.duit.app.data.repository.AuthRepository
+import com.duit.app.data.repository.LoginResult
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -41,7 +42,7 @@ class AuthRepositoryTest {
         val result = repository.login("test@test.com", "password123")
 
         assertTrue(result.isSuccess)
-        assertEquals("Test User", result.getOrNull()?.name)
+        assertEquals("Test User", (result.getOrNull() as? LoginResult.Success)?.user?.name)
         verify(tokenStorage).saveToken("abc123")
     }
 

@@ -1,6 +1,7 @@
 package com.duit.app
 
 import com.duit.app.data.local.TokenStorage
+import com.duit.app.data.local.db.TransactionDao
 import com.duit.app.data.remote.ApiService
 import com.duit.app.data.remote.dto.*
 import com.duit.app.data.repository.TransactionRepository
@@ -15,6 +16,7 @@ class TransactionRepositoryTest {
 
     private lateinit var api: ApiService
     private lateinit var tokenStorage: TokenStorage
+    private lateinit var transactionDao: TransactionDao
     private lateinit var repository: TransactionRepository
 
     private val mockCategoryResponse = CategoryResponse(1, "Makan", "expense", "#ef4444", "🍽️")
@@ -29,7 +31,8 @@ class TransactionRepositoryTest {
     fun setUp() {
         api = mock()
         tokenStorage = mock()
-        repository = TransactionRepository(api, tokenStorage)
+        transactionDao = mock()
+        repository = TransactionRepository(api, tokenStorage, transactionDao)
     }
 
     @Test

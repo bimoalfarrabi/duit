@@ -2,6 +2,7 @@ package com.duit.app
 
 import com.duit.app.data.local.TokenStorage
 import com.duit.app.data.repository.AuthRepository
+import com.duit.app.data.repository.LoginResult
 import com.duit.app.ui.auth.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -58,7 +59,7 @@ class LoginViewModelTest {
     fun `login success sets isSuccess true`() = runTest {
         val mockUser = com.duit.app.domain.model.User(1, "Test", "test@test.com")
         whenever(authRepository.login("user@test.com", "password123"))
-            .thenReturn(Result.success(mockUser))
+            .thenReturn(Result.success(LoginResult.Success(mockUser)))
 
         viewModel.login("user@test.com", "password123")
         advanceUntilIdle()
