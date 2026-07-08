@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
@@ -47,6 +48,7 @@ import com.duit.app.ui.budget.BudgetScreen
 import com.duit.app.ui.category.CategoryScreen
 import com.duit.app.ui.home.HomeScreen
 import com.duit.app.ui.ocr.OcrScreen
+import com.duit.app.ui.voice.VoiceInputScreen
 import com.duit.app.ui.savings.SavingsScreen
 import com.duit.app.ui.transaction.AddTransactionScreen
 import com.duit.app.ui.transaction.TransactionListScreen
@@ -55,16 +57,19 @@ import com.duit.app.ui.wallet.WalletScreen
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
     object Home : Screen("home", "Beranda", Icons.Default.Home)
     // ponytail: query params as nullable strings — no new wrapper class needed
-    object Add : Screen("add_transaction?ocr_title={ocr_title}&ocr_amount={ocr_amount}&ocr_date={ocr_date}", "Tambah", Icons.Default.Add) {
+    object Add : Screen("add_transaction?ocr_title={ocr_title}&ocr_amount={ocr_amount}&ocr_date={ocr_date}&voice_title={voice_title}&voice_amount={voice_amount}&voice_type={voice_type}", "Tambah", Icons.Default.Add) {
         val baseRoute = "add_transaction"
         fun withOcr(title: String, amount: String, date: String) =
             "add_transaction?ocr_title=${title}&ocr_amount=${amount}&ocr_date=${date}"
+        fun withVoice(title: String, amount: String, type: String) =
+            "add_transaction?voice_title=${title}&voice_amount=${amount}&voice_type=${type}"
     }
     object History : Screen("transactions", "Riwayat", Icons.Default.List)
     object Wallet : Screen("wallets", "Dompet", Icons.Default.AccountBox)
     object Budget : Screen("budgets", "Budget", Icons.Default.List)
     object Savings : Screen("savings", "Tabungan", Icons.Default.Person)
     object Ocr : Screen("ocr", "Scan Struk", Icons.Default.CameraAlt)
+    object Voice : Screen("voice", "Input Suara", Icons.Default.Add)
 }
 
 val bottomNavItems = listOf(Screen.Home, Screen.History, Screen.Wallet)
@@ -135,6 +140,7 @@ fun MainScreen(onLogout: () -> Unit) {
 
     val showBottomBar = currentRoute != Screen.Add.route
         && currentRoute != Screen.Ocr.route
+        && currentRoute != Screen.Voice.route
         && currentRoute?.startsWith(Screen.Add.baseRoute) != true
 
     Scaffold(
@@ -172,6 +178,14 @@ fun MainScreen(onLogout: () -> Unit) {
                                 onClick = {
                                     fabExpanded = false
                                     navController.navigate(Screen.Ocr.route)
+                                }
+                            )
+                            FabMenuItem(
+                                icon = Icons.Default.Mic,
+                                label = "Input Suara",
+                                onClick = {
+                                    fabExpanded = false
+                                    navController.navigate(Screen.Voice.route)
                                 }
                             )
                             FabMenuItem(
@@ -246,7 +260,10 @@ fun MainScreen(onLogout: () -> Unit) {
                 arguments = listOf(
                     navArgument("ocr_title") { type = NavType.StringType; nullable = true; defaultValue = null },
                     navArgument("ocr_amount") { type = NavType.StringType; nullable = true; defaultValue = null },
-                    navArgument("ocr_date") { type = NavType.StringType; nullable = true; defaultValue = null }
+                    navArgument("ocr_date") { type = NavType.StringType; nullable = true; defaultValue = null },
+                    navArgument("voice_title") { type = NavType.StringType; nullable = true; defaultValue = null },
+                    navArgument("voice_amount") { type = NavType.StringType; nullable = true; defaultValue = null },
+                    navArgument("voice_type") { type = NavType.StringType; nullable = true; defaultValue = null }
                 ),
                 enterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { it } },
                 exitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } },
@@ -259,9 +276,16 @@ fun MainScreen(onLogout: () -> Unit) {
                 val ocrPrefill = if (ocrTitle != null || ocrAmount != null) {
                     Triple(ocrTitle.orEmpty(), ocrAmount.orEmpty(), ocrDate.orEmpty())
                 } else null
+                val voiceTitle = backStackEntry.arguments?.getString("voice_title")
+                val voiceAmount = backStackEntry.arguments?.getString("voice_amount")
+                val voiceType = backStackEntry.arguments?.getString("voice_type")
+                val voicePrefill = if (voiceTitle != null || voiceAmount != null) {
+                    Triple(voiceTitle.orEmpty(), voiceAmount.orEmpty(), voiceType.orEmpty())
+                } else null
                 AddTransactionScreen(
                     onBack = { navController.popBackStack() },
-                    ocrPrefill = ocrPrefill
+                    ocrPrefill = ocrPrefill,
+                    voicePrefill = voicePrefill
                 )
             }
 
@@ -333,6 +357,25 @@ fun MainScreen(onLogout: () -> Unit) {
                     onResult = { title, amount, date ->
                         navController.navigate(Screen.Add.withOcr(title, amount, date)) {
                             popUpTo(Screen.Ocr.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable(
+                route = Screen.Voice.route,
+                enterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { it } },
+                exitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } },
+                popEnterTransition = { slideInHorizontally(tween(ANIM_DURATION)) { -it } },
+                popExitTransition = { slideOutHorizontally(tween(ANIM_DURATION)) { it } }
+            ) {
+                VoiceInputScreen(
+                    onBack = { navController.popBackStack() },
+                    onResult = { title, amount, type ->
+                        navController.navigate(
+                            "add_transaction?voice_title=$title&voice_amount=$amount&voice_type=$type"
+                        ) {
+                            popUpTo(Screen.Voice.route) { inclusive = true }
                         }
                     }
                 )

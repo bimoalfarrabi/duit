@@ -295,13 +295,13 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 
 ### Android v4 Voice (Planned)
 
-- [ ] `VoiceInputScreen.kt`: Android `SpeechRecognizer` (on-device) — minta RECORD_AUDIO permission, tampil waveform/listening overlay
-- [ ] `VoiceParser.kt`: regex/NLP parser — ekstrak nominal (`18000`, `18rb`, `18k`), tipe (`beli`, `bayar` = expense; `terima`, `dapat` = income), judul (sisa kalimat)
-- [ ] `VoiceViewModel.kt`: orchestrate SpeechRecognizer → VoiceParser → expose `VoiceUiState`
-- [ ] `NavGraph.kt`: tambah route `voice`, FAB speed dial item ketiga — **Input Suara** → `VoiceInputScreen`
-- [ ] `AddTransactionScreen.kt`: tambah prefill via nav args `voice_title/voice_amount/voice_type` (sama pola OCR)
-- [ ] `VoiceParserTest.kt`: unit test berbagai format kalimat
-- [ ] `AndroidManifest.xml`: tambah `RECORD_AUDIO` permission
+- [x] `VoiceInputScreen.kt`: Android `SpeechRecognizer` (on-device) — minta RECORD_AUDIO permission, tampil waveform/listening overlay
+- [x] `VoiceParser.kt`: regex/NLP parser — ekstrak nominal (`18000`, `18rb`, `18k`), tipe (`beli`, `bayar` = expense; `terima`, `dapat` = income), judul (sisa kalimat)
+- [x] `VoiceViewModel.kt`: orchestrate SpeechRecognizer → VoiceParser → expose `VoiceUiState`
+- [x] `NavGraph.kt`: tambah route `voice`, FAB speed dial item ketiga — **Input Suara** → `VoiceInputScreen`
+- [x] `AddTransactionScreen.kt`: tambah prefill via nav args `voice_title/voice_amount/voice_type` (sama pola OCR)
+- [x] `VoiceParserTest.kt`: unit test berbagai format kalimat
+- [x] `AndroidManifest.xml`: tambah `RECORD_AUDIO` permission
 
 ### Catatan Teknis v4
 - Tidak ada LLM — semua parsing on-device via regex + keyword matching

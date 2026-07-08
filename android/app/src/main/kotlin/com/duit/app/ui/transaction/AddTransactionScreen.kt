@@ -22,6 +22,8 @@ fun AddTransactionScreen(
     onBack: () -> Unit,
     // ponytail: onNavigateToOcr removed — OCR access moved to FAB speed dial on HomeScreen
     ocrPrefill: Triple<String, String, String>? = null,
+    // ponytail: voice prefill — same pattern as OCR (title, amount, type)
+    voicePrefill: Triple<String, String, String>? = null,
     viewModel: AddTransactionViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -40,6 +42,16 @@ fun AddTransactionScreen(
             if (ocrTitle.isNotBlank()) title = ocrTitle
             if (ocrAmount.isNotBlank()) amount = ocrAmount
             if (ocrDate.isNotBlank()) date = ocrDate
+        }
+    }
+
+    // Apply voice prefill once when non-null — same pattern as OCR, adds type override
+    // Apply voice prefill once when non-null — same pattern as OCR, adds type override
+    LaunchedEffect(voicePrefill) {
+        voicePrefill?.let { (voiceTitle, voiceAmount, voiceType) ->
+            if (voiceTitle.isNotBlank()) title = voiceTitle
+            if (voiceAmount.isNotBlank()) amount = voiceAmount
+            if (voiceType.isNotBlank()) type = voiceType
         }
     }
 
