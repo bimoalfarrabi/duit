@@ -159,6 +159,40 @@ Fitur ini ada di roadmap tapi **belum waktunya** — tolak jika diminta sebelum 
 
 ---
 
+## Progress v5 🚧 Backend Done
+
+### Arsitektur (dikonfirmasi user)
+- Per-wallet sharing via pivot `wallet_user` (bukan household model)
+- Undangan via email + accept/decline flow (bukan direct add)
+- `wallets.user_id` tetap owner; member di pivot. Akses = owner OR member pivot
+- Backend dulu, Android menyusul
+
+### Selesai (Backend)
+- ✅ Migration `wallet_user` (pivot) + `wallet_invitations` (token 64, expire 7 hari, status enum)
+- ✅ `WalletInvitation` model + `Wallet::members/invitations/isOwnedBy/isAccessibleBy` + `User::sharedWallets/accessibleWalletIds`
+- ✅ `WalletInvitationNotification` (email, sinkron via `Notification::route('mail', $email)`)
+- ✅ `WalletInvitationController` (invite owner-only, index pending, accept, decline)
+- ✅ `WalletMemberController` (list owner+member, remove owner-only)
+- ✅ `WalletController@index` sertakan shared wallet; `WalletResource` tambah `is_owner`/`is_shared`
+- ✅ `TransactionController` filter per accessible wallet — member bisa buat transaksi di shared wallet, edit/hapus tetap milik pembuat
+- ✅ `WalletSharingTest` (16 test) — full suite 64/64 passed, no regresi v1–v4
+
+### Permission Model
+- Owner: full control (edit/hapus wallet, invite, remove member)
+- Member: lihat wallet + lihat/buat transaksi. TIDAK bisa edit/hapus wallet atau kelola member
+
+### Belum
+- Android UI: invite screen, pending invitations, member list
+- Shared budget (desain belum diputuskan — butuh keputusan user)
+- Notifikasi aktivitas member
+
+### Catatan Teknis
+- Undangan bisa untuk email belum terdaftar — user register dulu, `GET /api/invitations` cocokkan email
+- Endpoint: `POST /wallets/{wallet}/invitations`, `GET /invitations`, `POST /invitations/{token}/accept|decline`, `GET/DELETE /wallets/{wallet}/members`
+- Data isolation v1–v4 tetap utuh (accessible wallet = owned untuk user non-shared)
+
+---
+
 ## Progress v4 ✅ Done
 
 ### Selesai

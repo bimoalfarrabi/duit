@@ -7,8 +7,8 @@
 | **v1** | Input manual, Laravel API, Astro dashboard | ✅ Live |
 | **v2** | Budget & savings | ✅ Done |
 | **v3** | OCR scan struk | ✅ Done |
-| **v4** | Voice input | ⬜ Backlog |
-| **v5** | Multi-user lanjutan | ⬜ Backlog |
+| **v4** | Voice input | ✅ Done |
+| **v5** | Multi-user lanjutan | 🚧 In Progress (backend done) |
 
 ---
 
@@ -73,9 +73,20 @@
 
 **Goal:** Keuangan bersama.
 
-- Family wallet (satu wallet bersama)
-- Shared budget
-- Permission: owner vs member
+**Arsitektur:** Per-wallet sharing via pivot `wallet_user` (bukan household terpisah).
+`wallets.user_id` tetap owner; member masuk pivot. Undangan via email + accept flow.
+
+**Backend (✅ Done):**
+- Shared wallet: owner bisa mengundang user lain via email
+- Invite flow: `POST /wallets/{wallet}/invitations` → email → `POST /invitations/{token}/accept|decline`
+- Undangan berlaku 7 hari, token `Str::random(64)`
+- Permission: owner = full control (edit/hapus wallet, invite, remove member); member = lihat wallet + lihat/buat transaksi
+- Transaksi difilter per accessible wallet (owned + shared), backward-compatible untuk user non-shared
+- Member management: `GET /wallets/{wallet}/members`, `DELETE /wallets/{wallet}/members/{member}` (owner-only)
+
+**Belum (backlog):**
+- Android UI untuk sharing (invite screen, pending invitations, member list)
+- Shared budget (desain belum diputuskan)
 - Notifikasi aktivitas member
 
 ---

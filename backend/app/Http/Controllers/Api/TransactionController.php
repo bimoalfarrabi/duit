@@ -14,7 +14,10 @@ class TransactionController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = $request->user()->transactions()->with(['category', 'wallet']);
+        // v5: transaksi pada semua wallet yang bisa diakses (milik sendiri + shared)
+        $query = Transaction::query()
+            ->whereIn('wallet_id', $request->user()->accessibleWalletIds())
+            ->with(['category', 'wallet']);
 
         if ($request->filled('month')) {
             $query->whereMonth('date', $request->integer('month'));
@@ -42,7 +45,7 @@ class TransactionController extends Controller
         $userId = $request->user()->id;
         $data = $request->validate([
             'category_id' => ['required', Rule::exists('categories', 'id')->where('user_id', $userId)],
-            'wallet_id'   => ['required', Rule::exists('wallets', 'id')->where('user_id', $userId)],
+            'wallet_id'   => ['required', Rule::in($request->user()->accessibleWalletIds())],
             'title'       => 'required|string|max:255',
             'amount'      => 'required|numeric|min:0',
             'type'        => 'required|in:income,expense',
@@ -74,7 +77,7 @@ class TransactionController extends Controller
         $userId = $request->user()->id;
         $data = $request->validate([
             'category_id' => ['sometimes', Rule::exists('categories', 'id')->where('user_id', $userId)],
-            'wallet_id'   => ['sometimes', Rule::exists('wallets', 'id')->where('user_id', $userId)],
+            'wallet_id'   => ['sometimes', Rule::in($request->user()->accessibleWalletIds())],
             'title'       => 'sometimes|string|max:255',
             'amount'      => 'sometimes|numeric|min:0',
             'type'        => 'sometimes|in:income,expense',

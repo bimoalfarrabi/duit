@@ -14,7 +14,7 @@ Ekosistem pencatatan keuangan personal yang cepat, terpusat, dan bisa di-self-ho
 ![Material 3](https://img.shields.io/badge/Material_3-1.3.x-7C4DFF?logo=materialdesign&logoColor=white)
 ![Hilt](https://img.shields.io/badge/Hilt-DI-2496ED?logo=dagger&logoColor=white)
 ![Sanctum](https://img.shields.io/badge/Sanctum-Token-FF2D20?logo=laravel&logoColor=white)
-![PHPUnit](https://img.shields.io/badge/PHPUnit-49/49-brightgreen?logo=phpunit&logoColor=white)
+![PHPUnit](https://img.shields.io/badge/PHPUnit-64/64-brightgreen?logo=phpunit&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ## Deskripsi Singkat
@@ -33,7 +33,7 @@ REST API sebagai single source of truth. Berjalan di shared hosting tanpa queue 
 | PHP | 8.2 | Runtime |
 | MySQL | 8 | Database relasional (MariaDB 10.4+ kompatibel) |
 | Laravel Sanctum | — | Autentikasi token-based (bearer token per device) |
-| PHPUnit | — | Feature testing (19 test cases) |
+| PHPUnit | — | Feature testing (64 test cases) |
 
 **Pattern:** Resource API (JSON:Resource transform), route-model-binding, policy-based authorization, form request validation.
 
@@ -107,7 +107,7 @@ Native Android app sebagai input utama. Arsitektur clean (data → domain → ui
 | **v2** | Budget & savings, notifikasi, password reset, email verification, 2FA | ✅ Done |
 | **v3** | OCR scan struk (on-device ML Kit) | ✅ Done |
 | **v4** | Voice input (on-device SpeechRecognizer) | ✅ Done |
-| **v5** | Multi-user lanjutan (family wallet) | ⬜ Backlog |
+| **v5** | Multi-user lanjutan (shared wallet) | 🚧 Backend done, Android next |
 
 Detail roadmap: [`docs/07-roadmap.md`](docs/07-roadmap.md)
 
@@ -117,6 +117,7 @@ Detail roadmap: [`docs/07-roadmap.md`](docs/07-roadmap.md)
 - **Wallet bank/ewallet:** tidak terbatas per user
 - **Transaksi:** wajib ada `wallet_id` dan `category_id`
 - **Data isolation:** semua query HARUS filter by `user_id` — user A tidak bisa akses data user B
+- **Shared wallet (v5):** owner bisa mengundang user lain via email; member bisa lihat wallet + lihat/buat transaksi, tapi tidak bisa edit/hapus wallet atau kelola member
 
 ## Cara Instalasi
 

@@ -13,6 +13,8 @@ categories
 
 wallets
   └─< transactions (wallet_id)
+  └─< wallet_invitations (wallet_id)
+  >──< users (via wallet_user pivot — shared members)
 ```
 
 ## Tabel
@@ -76,6 +78,44 @@ wallets
 **Business rules:**
 - `cash`: max 1 per user, dibuat otomatis saat register via `User::created` event
 - `bank` / `ewallet`: tidak terbatas per user
+- `user_id` = owner. Member shared wallet disimpan di pivot `wallet_user` (v5)
+
+---
+
+### wallet_user (pivot, v5)
+
+Menyimpan member shared wallet. Owner **tidak** masuk pivot — dilacak via `wallets.user_id`.
+
+| Kolom | Tipe | Keterangan |
+|-------|------|-----------|
+| id | BIGINT UNSIGNED PK | |
+| wallet_id | BIGINT UNSIGNED FK | → wallets.id, cascade delete |
+| user_id | BIGINT UNSIGNED FK | → users.id, cascade delete |
+| role | VARCHAR DEFAULT 'member' | Saat ini selalu `member` |
+| created_at | TIMESTAMP | |
+| updated_at | TIMESTAMP | |
+
+**Unique:** `(wallet_id, user_id)` — satu user tidak bisa jadi member ganda di wallet yang sama.
+
+---
+
+### wallet_invitations (v5)
+
+Undangan email untuk sharing wallet.
+
+| Kolom | Tipe | Keterangan |
+|-------|------|-----------|
+| id | BIGINT UNSIGNED PK | |
+| wallet_id | BIGINT UNSIGNED FK | → wallets.id, cascade delete |
+| inviter_id | BIGINT UNSIGNED FK | → users.id (owner yang mengundang), cascade delete |
+| email | VARCHAR(255) | Email yang diundang (boleh belum terdaftar) |
+| token | VARCHAR(64) UNIQUE | `Str::random(64)`, dipakai untuk accept/decline |
+| status | ENUM('pending','accepted','declined') DEFAULT 'pending' | |
+| expires_at | TIMESTAMP | Berlaku 7 hari sejak dibuat |
+| created_at | TIMESTAMP | |
+| updated_at | TIMESTAMP | |
+
+**Index:** `(email, status)` — untuk query undangan pending per email.
 
 ---
 
@@ -103,6 +143,8 @@ wallets
 2. `create_categories_table`
 3. `create_wallets_table`
 4. `create_transactions_table`
+5. `create_budgets_table`, `create_savings_goals_table` (v2)
+6. `create_wallet_user_table`, `create_wallet_invitations_table` (v5)
 
 ## Indexing
 

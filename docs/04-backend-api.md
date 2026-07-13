@@ -63,19 +63,77 @@ Ownership violation → HTTP 403
 
 | Method | Endpoint | Auth | Deskripsi |
 |--------|----------|------|-----------|
-| GET | `/api/wallets` | ✅ | List wallet milik user |
+| GET | `/api/wallets` | ✅ | List wallet yang bisa diakses (milik sendiri + shared) |
 | POST | `/api/wallets` | ✅ | Buat wallet baru |
-| PUT | `/api/wallets/{id}` | ✅ | Update wallet |
-| DELETE | `/api/wallets/{id}` | ✅ | Hapus wallet |
+| PUT | `/api/wallets/{id}` | ✅ | Update wallet (owner-only) |
+| DELETE | `/api/wallets/{id}` | ✅ | Hapus wallet (owner-only) |
 
 **Business rules:**
 - `cash`: max 1 per user, dibuat otomatis saat register → `POST` dengan `type=cash` ditolak 422 jika sudah ada
 - `bank`/`ewallet`: tidak terbatas
 - Cash wallet tidak bisa dihapus → `DELETE` pada cash wallet return 403
+- `GET /api/wallets` mengembalikan wallet milik sendiri **dan** wallet yang di-share ke user (lihat Wallet Sharing)
+- Update/hapus wallet hanya boleh oleh owner (`user_id`); member return 403
 
 **Wallet object:**
 ```json
-{ "id": 1, "name": "Cash", "type": "cash", "color": "#4CAF50", "icon": "wallet", "balance": 0 }
+{ "id": 1, "name": "Cash", "type": "cash", "color": "#4CAF50", "icon": "wallet", "balance": 0, "is_owner": true, "is_shared": false }
+```
+- `is_owner`: `true` jika user yang login adalah owner wallet
+- `is_shared`: hanya muncul untuk owner — `true` jika wallet punya minimal 1 member
+
+---
+
+### Wallet Sharing (v5)
+
+Sharing per-wallet: owner mengundang user lain via email, member menerima undangan lalu bisa mengakses wallet. `wallets.user_id` tetap owner; member disimpan di pivot `wallet_user`.
+
+| Method | Endpoint | Auth | Deskripsi |
+|--------|----------|------|-----------|
+| POST | `/api/wallets/{wallet}/invitations` | ✅ | Owner mengundang member via email |
+| GET | `/api/invitations` | ✅ | Undangan pending yang ditujukan ke email user |
+| POST | `/api/invitations/{token}/accept` | ✅ | Terima undangan → jadi member |
+| POST | `/api/invitations/{token}/decline` | ✅ | Tolak undangan |
+| GET | `/api/wallets/{wallet}/members` | ✅ | List owner + member wallet (siapa saja yang punya akses) |
+| DELETE | `/api/wallets/{wallet}/members/{member}` | ✅ | Hapus member (owner-only) |
+
+**Business rules:**
+- Invite hanya boleh oleh owner → non-owner return 403
+- Tidak bisa mengundang diri sendiri (422), member yang sudah ada (422), atau email dengan undangan pending (422)
+- Token: `Str::random(64)`, berlaku 7 hari (`expires_at`)
+- Undangan bisa untuk email yang belum terdaftar — user register dulu, lalu `GET /api/invitations` menampilkan undangan yang cocok dengan emailnya
+- Accept/decline hanya boleh oleh user dengan email yang cocok (404 jika tidak); undangan kedaluwarsa/non-pending return 422
+- Permission member: lihat wallet + lihat/buat transaksi. **Tidak bisa** edit/hapus wallet atau kelola member (403)
+- Notifikasi email dikirim via `Notification::route('mail', $email)` (sinkron, sesuai constraint shared hosting)
+
+**Invitation request (POST invite):**
+```json
+{ "email": "partner@example.com" }
+```
+
+**Invitation object:**
+```json
+{
+  "id": 1,
+  "wallet_id": 2,
+  "wallet_name": "Belanja Bulanan",
+  "inviter": { "id": 1, "name": "Budi" },
+  "email": "partner@example.com",
+  "status": "pending",
+  "expires_at": "2026-07-20T08:28:00+00:00"
+}
+```
+
+**Members response (GET members):**
+```json
+{
+  "data": {
+    "owner": { "id": 1, "name": "Budi", "email": "budi@example.com", "role": "owner" },
+    "members": [
+      { "id": 2, "name": "Sari", "email": "sari@example.com", "role": "member" }
+    ]
+  }
+}
 ```
 
 ---
@@ -106,6 +164,8 @@ Ownership violation → HTTP 403
 | DELETE | `/api/transactions/{id}` | ✅ | Hapus transaksi |
 
 **Filter params (GET):** `?month=7&year=2026&type=expense&category_id=1&wallet_id=2`
+
+**v5 catatan:** `GET`/`POST` bekerja pada semua wallet yang bisa diakses (milik sendiri + shared). Member bisa membuat transaksi di shared wallet memakai kategorinya sendiri. `PUT`/`DELETE` tetap terbatas pada pembuat transaksi (`user_id`).
 
 **Transaction request:**
 ```json
@@ -266,6 +326,8 @@ Ownership violation → HTTP 403
 app/Http/Controllers/Api/
 ├── AuthController.php
 ├── WalletController.php
+├── WalletInvitationController.php
+├── WalletMemberController.php
 ├── CategoryController.php
 ├── TransactionController.php
 ├── StatisticsController.php
@@ -276,5 +338,6 @@ app/Http/Controllers/Api/
 
 - Semua route kecuali `register` dan `login` di bawah `middleware('auth:sanctum')`
 - Setiap endpoint ownership-check: query selalu filter `user_id = auth()->id()`
+- **Pengecualian v5 (shared wallet):** wallet & transaksi difilter per *accessible wallet* (owned + shared via pivot `wallet_user`), bukan hanya `user_id`. Mutasi wallet/member tetap owner-only.
 - Input validasi via `$request->validate([...])`
 - `.htaccess` forward `Authorization` header (wajib di shared hosting)

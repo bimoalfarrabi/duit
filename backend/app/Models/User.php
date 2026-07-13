@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -51,5 +52,23 @@ class User extends Authenticatable implements MustVerifyEmail
     public function savingsGoals(): HasMany
     {
         return $this->hasMany(SavingsGoal::class);
+    }
+
+    /** Wallet milik user lain yang di-share ke user ini. */
+    public function sharedWallets(): BelongsToMany
+    {
+        return $this->belongsToMany(Wallet::class, 'wallet_user')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    /** ID semua wallet yang bisa diakses: milik sendiri + yang di-share. */
+    public function accessibleWalletIds(): array
+    {
+        return $this->wallets()->pluck('id')
+            ->merge($this->sharedWallets()->pluck('wallets.id'))
+            ->unique()
+            ->values()
+            ->all();
     }
 }

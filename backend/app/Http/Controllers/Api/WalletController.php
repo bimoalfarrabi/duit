@@ -12,7 +12,8 @@ class WalletController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $wallets = $request->user()->wallets()->get();
+        $wallets = $request->user()->wallets()->get()
+            ->concat($request->user()->sharedWallets()->get());
 
         return $this->success(WalletResource::collection($wallets));
     }

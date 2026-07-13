@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\TwoFactorController;
 use App\Http\Controllers\Api\WalletController;
+use App\Http\Controllers\Api\WalletInvitationController;
+use App\Http\Controllers\Api\WalletMemberController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -43,6 +45,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('wallets', WalletController::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('transactions', TransactionController::class);
+
+    // v5: wallet sharing — invite via email, member management
+    Route::get('invitations', [WalletInvitationController::class, 'index']);
+    Route::post('invitations/{token}/accept', [WalletInvitationController::class, 'accept']);
+    Route::post('invitations/{token}/decline', [WalletInvitationController::class, 'decline']);
+    Route::post('wallets/{wallet}/invitations', [WalletInvitationController::class, 'store']);
+    Route::get('wallets/{wallet}/members', [WalletMemberController::class, 'index']);
+    Route::delete('wallets/{wallet}/members/{member}', [WalletMemberController::class, 'destroy']);
 
     // Budget — upsert via POST, tidak ada PUT
     Route::get('budgets', [BudgetController::class, 'index']);

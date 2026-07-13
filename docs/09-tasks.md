@@ -308,3 +308,38 @@ Legend: `[ ]` pending · `[x]` done · `[-]` skip/tidak perlu
 - SpeechRecognizer pakai `ACTION_RECOGNIZE_SPEECH` intent atau `RecognizerIntent`
 - FAB akan punya 3 item: Scan Struk + Input Suara + Tambah Manual
 - Pola prefill via nav args konsisten dengan v3 OCR
+
+---
+
+## Rencana v5 — Multi-user Lanjutan (Shared Wallet)
+
+**Arsitektur:** per-wallet sharing via pivot `wallet_user` + undangan email. `wallets.user_id` = owner, member di pivot.
+
+### Backend v5 Shared Wallet
+
+- [x] Migration: `wallet_user` pivot (`wallet_id`, `user_id`, `role`, unique `[wallet_id, user_id]`)
+- [x] Migration: `wallet_invitations` (`wallet_id`, `inviter_id`, `email`, `token` 64 unique, `status`, `expires_at`, index `[email, status]`)
+- [x] Model `WalletInvitation` — relasi `wallet()` + `inviter()`, helper `isExpired()`
+- [x] Model `Wallet` — `members()` belongsToMany, `invitations()` hasMany, `isOwnedBy()`, `isAccessibleBy()`
+- [x] Model `User` — `sharedWallets()` belongsToMany, `accessibleWalletIds()`
+- [x] `WalletInvitationNotification` — email undangan (mail channel, sinkron)
+- [x] `WalletInvitationResource` + `WalletResource` tambah `is_owner` + `is_shared`
+- [x] `WalletInvitationController` — `store` (invite, owner-only), `index` (pending per email), `accept`, `decline`
+- [x] `WalletMemberController` — `index` (list owner+member), `destroy` (remove, owner-only)
+- [x] `WalletController@index` — sertakan wallet shared (owned + member-of)
+- [x] `TransactionController` — filter per accessible wallet, member bisa buat transaksi di shared wallet
+- [x] `routes/api.php` — daftarkan route invitation + member
+- [x] Feature test: `WalletSharingTest` (16 test — invite, accept, decline, akses, permission)
+- [x] Full suite → 64/64 passed (1 skip), tidak ada regresi v1–v4
+
+### Android v5 Shared Wallet (Planned)
+
+- [ ] `WalletSharingRepository.kt` + DTO (invitation, member)
+- [ ] Invite screen — input email, kirim undangan dari wallet detail
+- [ ] Pending invitations screen — accept/decline
+- [ ] Member list screen — owner bisa remove member
+- [ ] `ApiService.kt` — endpoint invitation + member
+
+### Deferred v5
+- [ ] Shared budget — desain belum diputuskan (butuh keputusan: budget per-owner atau per-wallet)
+- [ ] Notifikasi aktivitas member (track Android)
